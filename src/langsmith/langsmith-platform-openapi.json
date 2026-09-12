@@ -20891,7 +20891,7 @@
           "orgs"
         ],
         "summary": "Update org service key",
-        "description": "Update an API key's role(s) in place without rotating the key.\n\nRestricted to org admins (ORGANIZATION_MANAGE). Applies to both\norg-scoped and workspace-scoped keys listed in /orgs/current/service-keys.",
+        "description": "Update an API key's role(s) in place without rotating the key.\n\nOrganization Operators cannot assign the Organization Admin role or change\na key that already holds it, and no key can change its own roles. Applies\nto both org-scoped and workspace-scoped keys.",
         "operationId": "update_org_service_key_api_v1_orgs_current_service_keys__api_key_id__patch",
         "security": [
           {
@@ -21147,6 +21147,72 @@
         "summary": "Delete org personal access token",
         "description": "Delete a personal access token, removing the record entirely.\n\nCallers may always delete their own tokens; organization admins may delete\nany member's.",
         "operationId": "delete_org_personal_access_token_api_v1_orgs_current_personal_access_tokens__pat_id__delete",
+        "security": [
+          {
+            "API Key": []
+          },
+          {
+            "Organization ID": []
+          },
+          {
+            "Bearer Auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "pat_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Pat Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIKeyGetResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The personal access token does not exist, or belongs to another member and the caller may not administer other members' tokens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "x-public": true
+      }
+    },
+    "/api/v1/orgs/current/personal-access-tokens/{pat_id}/revocation": {
+      "post": {
+        "tags": [
+          "orgs"
+        ],
+        "summary": "Revoke org personal access token",
+        "description": "Revoke a personal access token, so it stops working but its record remains.\n\nThe token is marked revoked rather than deleted, and its expiry is moved to the\nrevocation time so it stops authenticating. Callers may always revoke their own\ntokens; organization admins may revoke any member's.",
+        "operationId": "revoke_org_personal_access_token_api_v1_orgs_current_personal_access_tokens__pat_id__revocation_post",
         "security": [
           {
             "API Key": []
@@ -26100,8 +26166,8 @@
             "name": "include_stats",
             "in": "query",
             "schema": {
-              "default": true,
               "type": "boolean",
+              "default": true,
               "title": "Include Stats"
             }
           },
@@ -26110,10 +26176,10 @@
             "name": "limit",
             "in": "query",
             "schema": {
-              "default": 20,
-              "maximum": 100,
               "type": "integer",
+              "default": 20,
               "minimum": 1,
+              "maximum": 100,
               "title": "Limit"
             }
           },
@@ -26122,8 +26188,8 @@
             "name": "offset",
             "in": "query",
             "schema": {
-              "default": 0,
               "type": "integer",
+              "default": 0,
               "minimum": 0,
               "title": "Offset"
             }
@@ -26334,8 +26400,8 @@
             "name": "get_examples",
             "in": "query",
             "schema": {
-              "default": false,
               "type": "boolean",
+              "default": false,
               "title": "Get Examples"
             }
           },
@@ -26353,8 +26419,8 @@
             "name": "include_model",
             "in": "query",
             "schema": {
-              "default": false,
               "type": "boolean",
+              "default": false,
               "title": "Include Model"
             }
           },
@@ -26362,8 +26428,8 @@
             "name": "is_view",
             "in": "query",
             "schema": {
-              "default": false,
               "type": "boolean",
+              "default": false,
               "title": "Is View"
             }
           }
@@ -27441,8 +27507,8 @@
             "name": "page_size",
             "in": "query",
             "schema": {
-              "default": 20,
               "type": "integer",
+              "default": 20,
               "title": "Page Size"
             }
           },
@@ -27473,12 +27539,12 @@
             "name": "direction",
             "in": "query",
             "schema": {
-              "default": "forward",
               "enum": [
                 "forward",
                 "backward"
               ],
               "type": "string",
+              "default": "forward",
               "title": "Direction"
             }
           }
@@ -28609,10 +28675,10 @@
             "style": "form",
             "explode": false,
             "schema": {
+              "type": "array",
               "items": {
                 "type": "string"
               },
-              "type": "array",
               "title": "Tag Value Id"
             }
           },
@@ -28632,10 +28698,10 @@
             "style": "form",
             "explode": false,
             "schema": {
+              "type": "array",
               "items": {
                 "type": "string"
               },
-              "type": "array",
               "title": "Resource Id"
             }
           },
@@ -28662,8 +28728,8 @@
             "name": "limit",
             "in": "query",
             "schema": {
-              "default": 100,
               "type": "integer",
+              "default": 100,
               "title": "Limit"
             }
           },
@@ -28672,8 +28738,8 @@
             "name": "offset",
             "in": "query",
             "schema": {
-              "default": 0,
               "type": "integer",
+              "default": 0,
               "title": "Offset"
             }
           }
@@ -28840,10 +28906,10 @@
             "style": "form",
             "explode": false,
             "schema": {
+              "type": "array",
               "items": {
                 "type": "string"
               },
-              "type": "array",
               "title": "Evaluator Ids"
             }
           },
@@ -28974,10 +29040,10 @@
             "style": "form",
             "explode": false,
             "schema": {
+              "type": "array",
               "items": {
                 "type": "string"
               },
-              "type": "array",
               "title": "Resource Id"
             }
           },
@@ -29006,10 +29072,10 @@
             "style": "form",
             "explode": false,
             "schema": {
+              "type": "array",
               "items": {
                 "type": "string"
               },
-              "type": "array",
               "title": "Tag Value Id"
             }
           },
@@ -30792,6 +30858,7 @@
             "style": "form",
             "explode": true,
             "schema": {
+              "type": "array",
               "items": {
                 "enum": [
                   0,
@@ -30801,7 +30868,6 @@
                 ],
                 "type": "integer"
               },
-              "type": "array",
               "title": "Severity Exact"
             }
           },
@@ -30812,6 +30878,7 @@
             "style": "form",
             "explode": true,
             "schema": {
+              "type": "array",
               "items": {
                 "enum": [
                   "fixing",
@@ -30820,7 +30887,6 @@
                 ],
                 "type": "string"
               },
-              "type": "array",
               "title": "Activity"
             }
           },
@@ -33217,10 +33283,10 @@
             "style": "form",
             "explode": true,
             "schema": {
+              "type": "array",
               "items": {
                 "type": "string"
               },
-              "type": "array",
               "title": "Name Like"
             }
           },
@@ -33231,10 +33297,10 @@
             "style": "form",
             "explode": true,
             "schema": {
+              "type": "array",
               "items": {
                 "type": "string"
               },
-              "type": "array",
               "title": "Email Like"
             }
           },
@@ -33245,10 +33311,10 @@
             "style": "form",
             "explode": true,
             "schema": {
+              "type": "array",
               "items": {
                 "type": "string"
               },
-              "type": "array",
               "title": "Workspace Name Like"
             }
           },
@@ -33259,10 +33325,10 @@
             "style": "form",
             "explode": true,
             "schema": {
+              "type": "array",
               "items": {
                 "type": "string"
               },
-              "type": "array",
               "title": "Organization Role Like"
             }
           },
@@ -33273,10 +33339,10 @@
             "style": "form",
             "explode": true,
             "schema": {
+              "type": "array",
               "items": {
                 "type": "string"
               },
-              "type": "array",
               "title": "Workspace Role Like"
             }
           }
@@ -33499,10 +33565,10 @@
             "style": "form",
             "explode": true,
             "schema": {
+              "type": "array",
               "items": {
                 "type": "string"
               },
-              "type": "array",
               "title": "Access Policy Ids"
             }
           }
@@ -34024,6 +34090,120 @@
             }
           }
         }
+      }
+    },
+    "/api/v1/platform/product-feedbacks": {
+      "post": {
+        "description": "**Alpha:** This endpoint is in active development and may change without notice.\n\nSubmits concise product feedback with optional non-sensitive client details.",
+        "tags": [
+          "productfeedback"
+        ],
+        "summary": "[alpha] submit product feedback",
+        "parameters": [
+          {
+            "description": "Idempotency key",
+            "name": "Idempotency-Key",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {
+              "Location": {
+                "description": "URL of the created product feedback",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/productfeedback.ProductFeedback"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "malformed or invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/shared.ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "API Key": [],
+            "Tenant ID": []
+          },
+          {
+            "Bearer Auth": [],
+            "Tenant ID": []
+          }
+        ],
+        "x-public": true,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/productfeedback.CreateRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/platform/product-feedbacks/{id}": {
+      "get": {
+        "description": "**Alpha:** This endpoint is in active development and may change without notice.",
+        "tags": [
+          "productfeedback"
+        ],
+        "summary": "[alpha] get product feedback",
+        "parameters": [
+          {
+            "description": "Product feedback ID",
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/productfeedback.ProductFeedback"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "API Key": [],
+            "Tenant ID": []
+          },
+          {
+            "Bearer Auth": [],
+            "Tenant ID": []
+          }
+        ],
+        "x-public": true
       }
     },
     "/api/v1/platform/sessions/{sessionID}/agent-versions": {
@@ -35972,10 +36152,10 @@
             "style": "form",
             "explode": true,
             "schema": {
+              "type": "array",
               "items": {
                 "type": "string"
               },
-              "type": "array",
               "title": "Selects"
             }
           }
@@ -36069,10 +36249,10 @@
             "style": "form",
             "explode": true,
             "schema": {
+              "type": "array",
               "items": {
                 "type": "string"
               },
-              "type": "array",
               "title": "Selects"
             }
           }
@@ -36163,10 +36343,10 @@
             "style": "form",
             "explode": true,
             "schema": {
+              "type": "array",
               "items": {
                 "type": "string"
               },
-              "type": "array",
               "title": "Selects"
             }
           },
@@ -36297,10 +36477,10 @@
             "style": "form",
             "explode": true,
             "schema": {
+              "type": "array",
               "items": {
                 "type": "string"
               },
-              "type": "array",
               "title": "Selects"
             }
           }
@@ -36420,10 +36600,10 @@
             "style": "form",
             "explode": true,
             "schema": {
+              "type": "array",
               "items": {
                 "type": "string"
               },
-              "type": "array",
               "title": "Selects"
             }
           }
@@ -36817,6 +36997,7 @@
             "style": "form",
             "explode": true,
             "schema": {
+              "type": "array",
               "items": {
                 "enum": [
                   "ID",
@@ -36868,7 +37049,6 @@
                 ],
                 "type": "string"
               },
-              "type": "array",
               "title": "Selects"
             }
           },
@@ -37337,8 +37517,8 @@
             "name": "page_size",
             "in": "query",
             "schema": {
-              "default": 20,
               "type": "integer",
+              "default": 20,
               "title": "Page Size"
             }
           },
@@ -37356,8 +37536,8 @@
             "name": "limit",
             "in": "query",
             "schema": {
-              "default": 50,
               "type": "integer",
+              "default": 50,
               "title": "Limit"
             }
           },
@@ -37366,8 +37546,8 @@
             "name": "offset",
             "in": "query",
             "schema": {
-              "default": 0,
               "type": "integer",
+              "default": 0,
               "title": "Offset"
             }
           },
@@ -37405,10 +37585,10 @@
             "style": "form",
             "explode": true,
             "schema": {
+              "type": "array",
               "items": {
                 "type": "string"
               },
-              "type": "array",
               "title": "Label"
             }
           },
@@ -37417,8 +37597,8 @@
             "name": "sort_by",
             "in": "query",
             "schema": {
-              "default": "created_at",
               "type": "string",
+              "default": "created_at",
               "title": "Sort By"
             }
           },
@@ -37427,8 +37607,8 @@
             "name": "sort_order",
             "in": "query",
             "schema": {
-              "default": "desc",
               "type": "string",
+              "default": "desc",
               "title": "Sort Order"
             }
           },
@@ -37437,8 +37617,8 @@
             "name": "sort_direction",
             "in": "query",
             "schema": {
-              "default": "desc",
               "type": "string",
+              "default": "desc",
               "title": "Sort Direction"
             }
           }
@@ -37913,7 +38093,7 @@
     },
     "/api/v2/sandboxes/boxes/{name}/download-url": {
       "post": {
-        "description": "Generate a tokenized link that downloads a single file from a sandbox with no further authentication. This mints a token rather than creating an addressable resource, so it returns 200 with no Location header. The token pins the sandbox, the file path, and the response content type and disposition, so a link cannot be repointed at another file. Links never expire unless expires_in_seconds is set. The link is served from the sandbox service domain, not the API host.",
+        "description": "Generate a tokenized link that downloads a single file from a sandbox with no further authentication. This mints a token rather than creating an addressable resource, so it returns 200 with no Location header. The token pins the sandbox, the file path, the response content type and disposition, and the sandbox flags, so a link cannot be repointed at another file or served under a weaker policy. The file is always served with a Content-Security-Policy: a sandbox directive, plus a default-src holding every fetch to the sandbox's own download host and a set of pre-approved third-party origins. csp_sandbox_flags may loosen the sandbox with allow-downloads, allow-forms, allow-modals, allow-orientation-lock, allow-pointer-lock, allow-popups, allow-presentation, allow-scripts, or allow-top-navigation-by-user-activation. allow-same-origin is not accepted, so a served file never shares an origin with anything. csp_source_bundles selects the third-party origins: cdnjs, google-fonts, jsdelivr, and unpkg are all allowed when the field is omitted, and 'none' holds the file to the sandbox alone. Because every file of one sandbox is served from the same host, a page can load sibling files it has links for, but only by their own link URLs. Links never expire unless expires_in_seconds is set. The link is served from the sandbox service domain, not the API host.",
         "tags": [
           "sandboxes"
         ],
@@ -38917,8 +39097,8 @@
             "name": "page_size",
             "in": "query",
             "schema": {
-              "default": 20,
               "type": "integer",
+              "default": 20,
               "title": "Page Size"
             }
           },
@@ -38936,8 +39116,8 @@
             "name": "limit",
             "in": "query",
             "schema": {
-              "default": 50,
               "type": "integer",
+              "default": 50,
               "title": "Limit"
             }
           },
@@ -38946,8 +39126,8 @@
             "name": "offset",
             "in": "query",
             "schema": {
-              "default": 0,
               "type": "integer",
+              "default": 0,
               "title": "Offset"
             }
           },
@@ -38985,10 +39165,10 @@
             "style": "form",
             "explode": true,
             "schema": {
+              "type": "array",
               "items": {
                 "type": "string"
               },
-              "type": "array",
               "title": "Label"
             }
           },
@@ -38997,8 +39177,8 @@
             "name": "sort_by",
             "in": "query",
             "schema": {
-              "default": "created_at",
               "type": "string",
+              "default": "created_at",
               "title": "Sort By"
             }
           },
@@ -39007,8 +39187,8 @@
             "name": "sort_order",
             "in": "query",
             "schema": {
-              "default": "desc",
               "type": "string",
+              "default": "desc",
               "title": "Sort Order"
             }
           },
@@ -39017,8 +39197,8 @@
             "name": "sort_direction",
             "in": "query",
             "schema": {
-              "default": "desc",
               "type": "string",
+              "default": "desc",
               "title": "Sort Direction"
             }
           }
@@ -41045,6 +41225,7 @@
             "style": "form",
             "explode": true,
             "schema": {
+              "type": "array",
               "items": {
                 "enum": [
                   "TURNS",
@@ -41067,7 +41248,6 @@
                 ],
                 "type": "string"
               },
-              "type": "array",
               "title": "Selects"
             }
           },
@@ -41229,10 +41409,10 @@
             "name": "page_size",
             "in": "query",
             "schema": {
-              "default": 20,
-              "maximum": 100,
               "type": "integer",
+              "default": 20,
               "minimum": 1,
+              "maximum": 100,
               "title": "Page Size"
             }
           },
@@ -41258,6 +41438,7 @@
             "style": "form",
             "explode": true,
             "schema": {
+              "type": "array",
               "items": {
                 "enum": [
                   "THREAD_ID",
@@ -41287,7 +41468,6 @@
                 ],
                 "type": "string"
               },
-              "type": "array",
               "title": "Selects"
             }
           }
@@ -41622,6 +41802,7 @@
             "style": "form",
             "explode": true,
             "schema": {
+              "type": "array",
               "items": {
                 "enum": [
                   "ID",
@@ -41673,7 +41854,6 @@
                 ],
                 "type": "string"
               },
-              "type": "array",
               "title": "Selects"
             }
           }
@@ -43190,7 +43370,7 @@
     },
     "/orgs/current/data-planes": {
       "get": {
-        "description": "Returns up to 50 data planes owned by the caller's organization. Sorted status priority (active first), then newest first. Requires BYOC to be enabled for the org.",
+        "description": "Returns up to 50 data planes owned by the caller's organization across all lifecycle states. Sorted by status priority (active first), then newest first. Requires BYOC to be enabled for the org.",
         "tags": [
           "data_planes"
         ],
@@ -43274,7 +43454,7 @@
         "parameters": []
       },
       "post": {
-        "description": "Creates a new data plane object. Persists the rendered data plane spec, and returns 202 with the data plane in status=requested. Requires BYOC enabled org and org admin.",
+        "description": "Creates a new data plane object. Persists the rendered data plane spec, and returns 202 with the data plane in status=requested. Requires BYOC enabled org and org admin.\nUses the organization's assigned external ID to assume the AWS role. Configure that ID in the role's trust policy before creating a data plane.",
         "tags": [
           "data_planes"
         ],
@@ -43322,11 +43502,11 @@
             }
           },
           "409": {
-            "description": "Name already exists for this organization",
+            "description": "Name already exists or the organization's external ID needs configuration",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/data_planes.ErrorResponse"
+                  "$ref": "#/components/schemas/data_planes.CreateErrorResponse"
                 }
               }
             }
@@ -43378,7 +43558,7 @@
     },
     "/orgs/current/data-planes/{id}": {
       "delete": {
-        "description": "Verifies that the stored customer AWS role has delete permissions, removes linked workspaces, and starts asynchronous deprovisioning for a data plane owned by the caller's organization. Requires BYOC to be enabled for the org and org admin permissions.",
+        "description": "Verifies that the stored customer AWS role has delete permissions, removes linked workspaces, and starts asynchronous deprovisioning for an active or provisioning_failed data plane owned by the caller's organization. Requires BYOC to be enabled for the org and org admin permissions.",
         "tags": [
           "data_planes"
         ],
@@ -43455,7 +43635,7 @@
             }
           },
           "409": {
-            "description": "Data plane is not active",
+            "description": "Data plane cannot be deleted from its current status",
             "content": {
               "application/json": {
                 "schema": {
@@ -43616,10 +43796,10 @@
             "name": "limit",
             "in": "query",
             "schema": {
-              "default": 50,
-              "maximum": 100,
               "type": "integer",
+              "default": 50,
               "minimum": 1,
+              "maximum": 100,
               "title": "Limit"
             }
           },
@@ -43627,8 +43807,8 @@
             "name": "offset",
             "in": "query",
             "schema": {
-              "default": 0,
               "type": "integer",
+              "default": 0,
               "minimum": 0,
               "title": "Offset"
             }
@@ -44592,10 +44772,10 @@
             "name": "page_size",
             "in": "query",
             "schema": {
-              "default": 20,
-              "maximum": 100,
               "type": "integer",
+              "default": 20,
               "minimum": 1,
+              "maximum": 100,
               "title": "Page Size"
             }
           },
@@ -45058,6 +45238,18 @@
             ],
             "title": "Expires At"
           },
+          "revoked_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revoked At"
+          },
           "workspace_names": {
             "anyOf": [
               {
@@ -45199,6 +45391,18 @@
               }
             ],
             "title": "Expires At"
+          },
+          "revoked_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revoked At"
           },
           "workspace_names": {
             "anyOf": [
@@ -46785,6 +46989,7 @@
           "delete_api_key",
           "create_personal_access_token",
           "delete_personal_access_token",
+          "revoke_personal_access_token",
           "create_service_key",
           "delete_service_key",
           "update_service_key",
@@ -46825,6 +47030,7 @@
           "read_workspace_encrypted_secrets",
           "update_workspace_secrets",
           "delete_workspace_secret",
+          "read_org_encrypted_secrets",
           "update_org_secrets",
           "unshare_entities",
           "upsert_github_app_configuration",
@@ -46947,6 +47153,7 @@
           "update_annotation_queue_item",
           "get_annotation_queue_items",
           "submit_nps_response",
+          "submit_product_feedback",
           "create_mcp_server",
           "update_mcp_server",
           "delete_mcp_server",
@@ -46961,6 +47168,9 @@
           "create_agent_auth_connection",
           "update_agent_auth_connection",
           "delete_agent_auth_connection",
+          "create_agent_auth_oidc_integration",
+          "update_agent_auth_oidc_integration",
+          "delete_agent_auth_oidc_integration",
           "create_tool",
           "update_tool",
           "delete_tool",
@@ -60711,6 +60921,19 @@
             "title": "Byoc Enabled",
             "default": false
           },
+          "byoc_external_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Byoc External Id",
+            "description": "The organization's assigned AWS external ID for BYOC role trust policies.",
+            "readOnly": true
+          },
           "byoc_max_data_planes": {
             "type": "integer",
             "title": "Byoc Max Data Planes",
@@ -60945,11 +61168,6 @@
             "type": "boolean",
             "title": "Tuned Evals Enabled",
             "default": false
-          },
-          "gateway_data_protection_enabled": {
-            "type": "boolean",
-            "title": "Gateway Data Protection Enabled",
-            "default": true
           },
           "gateway_pii_redaction_enabled": {
             "type": "boolean",
@@ -64601,7 +64819,7 @@
               "type": "string"
             },
             "type": "array",
-            "maxItems": 100,
+            "maxItems": 500,
             "minItems": 1,
             "title": "Feedback Keys"
           },
@@ -76336,6 +76554,10 @@
           "user_instructions": {
             "description": "User-owned freeform preferences. Engine reads this as authoritative\ncontext and reconciles it into the Agent Overview on the next scan, but\nnever edits it. NULL when the user hasn't set any.",
             "type": "string"
+          },
+          "validation_deployment_id": {
+            "description": "ValidationDeploymentID selects the deployment used for baseline replay\nand as the parent of fix-verification previews.",
+            "type": "string"
           }
         }
       },
@@ -76494,6 +76716,10 @@
           },
           "user_instructions": {
             "description": "Freeform user preferences. Send \"\" to clear (the frontend must not send null).",
+            "type": "string"
+          },
+          "validation_deployment_id": {
+            "description": "ValidationDeploymentID is a deployment UUID or LangSmith deployment URL,\nor an empty string to disable validation.",
             "type": "string"
           }
         }
@@ -77098,6 +77324,18 @@
             "description": "Indicates whether this org can provision BYOC data planes.",
             "type": "boolean"
           },
+          "byoc_external_id": {
+            "description": "ByocExternalID is the organization's assigned AWS external ID, stored only in org config.",
+            "readOnly": true,
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "byoc_max_data_planes": {
             "description": "ByocMaxDataPlanes is the maximum number of BYOC data planes this org may have provisioned at once.",
             "type": "integer"
@@ -77226,12 +77464,8 @@
             "description": "FleetLCUSpendLimitMonthly caps an org's monthly Fleet LCU spend, resolved from\nMetronome custom fields. nil or negative means unlimited; 0 blocks all runs.",
             "type": "number"
           },
-          "gateway_data_protection_enabled": {
-            "description": "GatewayDataProtectionEnabled indicates whether this org can use gateway\ndata protection (the \"guard\" policy type, backed by Presidio).\nSet by Metronome entitlement, not admin-patchable. Defaults on, so orgs\nwithout an explicit entitlement value can configure guard policies.",
-            "type": "boolean"
-          },
           "gateway_pii_redaction_enabled": {
-            "description": "GatewayPIIRedactionEnabled indicates whether this org can use PII\ndetection/redaction inside gateway data protection (guard) policies.\nSub-gate beneath GatewayDataProtectionEnabled: when this is off,\nPII-configured guard policies are unavailable as a whole.\nSet by Metronome entitlement, not admin-patchable.",
+            "description": "GatewayPIIRedactionEnabled indicates whether this org can use PII\ndetection/redaction inside gateway data protection (guard) policies.\nWhen this is off, PII-configured guard policies are unavailable as a\nwhole. Set by Metronome entitlement, not admin-patchable.",
             "type": "boolean"
           },
           "ip_allowlist_enabled": {
@@ -78009,9 +78243,6 @@
               "type": "string"
             }
           },
-          "external_id": {
-            "type": "string"
-          },
           "name": {
             "type": "string"
           },
@@ -78581,6 +78812,9 @@
       "evaluators.CodeEvaluator": {
         "type": "object",
         "properties": {
+          "advanced_features_enabled": {
+            "type": "boolean"
+          },
           "code": {
             "type": "string"
           },
@@ -78599,33 +78833,31 @@
           "language": {
             "description": "Default: \"python\"",
             "type": "string"
-          },
-          "workspace_secrets_keys": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
           }
         }
       },
       "evaluators.CreateCodeEvaluatorRequest": {
         "type": "object",
         "properties": {
+          "advanced_features_enabled": {
+            "type": "boolean"
+          },
           "code": {
             "type": "string"
           },
           "dependencies": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "language": {
             "description": "Default: \"python\"",
             "type": "string"
-          },
-          "workspace_secrets_keys": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
           }
         }
       },
@@ -78953,20 +79185,24 @@
       "evaluators.UpdateCodeEvaluatorRequest": {
         "type": "object",
         "properties": {
+          "advanced_features_enabled": {
+            "type": "boolean"
+          },
           "code": {
             "type": "string"
           },
           "dependencies": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "language": {
             "type": "string"
-          },
-          "workspace_secrets_keys": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
           }
         }
       },
@@ -79749,7 +79985,7 @@
             "type": "string"
           },
           "fix_verification": {
-            "type": "object"
+            "$ref": "#/components/schemas/issues.IssueFixVerification"
           },
           "id": {
             "type": "string"
@@ -79815,8 +80051,87 @@
           "updated_at": {
             "type": "string"
           },
+          "validation_result": {
+            "$ref": "#/components/schemas/issues.IssueValidationResult"
+          },
           "watching_since": {
             "type": "string"
+          }
+        }
+      },
+      "issues.IssueFixVerification": {
+        "type": "object",
+        "properties": {
+          "attempt": {
+            "type": "integer"
+          },
+          "parent_deployment_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "preview_deployment_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "root_trace_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "awaiting_preview",
+              "verifying",
+              "passed",
+              "failed",
+              "inconclusive",
+              "timeout",
+              "error"
+            ]
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "issues.IssueValidationResult": {
+        "type": "object",
+        "properties": {
+          "active_revision_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "completed_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "deployment_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "reproduced",
+              "not_reproduced",
+              "inconclusive",
+              "error"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "root_trace_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       },
@@ -80992,6 +81307,123 @@
             "type": "string"
           }
         }
+      },
+      "productfeedback.Category": {
+        "type": "string",
+        "enum": [
+          "BUG",
+          "FEATURE_REQUEST",
+          "USABILITY",
+          "DOCUMENTATION",
+          "OTHER"
+        ],
+        "x-enum-varnames": [
+          "CategoryBug",
+          "CategoryFeatureRequest",
+          "CategoryUsability",
+          "CategoryDocumentation",
+          "CategoryOther"
+        ]
+      },
+      "productfeedback.ClientContext": {
+        "type": "object",
+        "properties": {
+          "architecture": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "os": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "version": {
+            "type": "string",
+            "maxLength": 100
+          }
+        }
+      },
+      "productfeedback.CreateRequest": {
+        "type": "object",
+        "required": [
+          "category",
+          "message",
+          "source"
+        ],
+        "properties": {
+          "category": {
+            "enum": [
+              "BUG",
+              "FEATURE_REQUEST",
+              "USABILITY",
+              "DOCUMENTATION",
+              "OTHER"
+            ],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/productfeedback.Category"
+              }
+            ]
+          },
+          "client": {
+            "$ref": "#/components/schemas/productfeedback.ClientContext"
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 4000,
+            "minLength": 1
+          },
+          "source": {
+            "enum": [
+              "LANGSMITH_CLI"
+            ],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/productfeedback.Source"
+              }
+            ]
+          }
+        }
+      },
+      "productfeedback.ProductFeedback": {
+        "type": "object",
+        "required": [
+          "category",
+          "created_at",
+          "id",
+          "message",
+          "source"
+        ],
+        "properties": {
+          "category": {
+            "$ref": "#/components/schemas/productfeedback.Category"
+          },
+          "client": {
+            "$ref": "#/components/schemas/productfeedback.ClientContext"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "message": {
+            "type": "string"
+          },
+          "source": {
+            "$ref": "#/components/schemas/productfeedback.Source"
+          }
+        }
+      },
+      "productfeedback.Source": {
+        "type": "string",
+        "enum": [
+          "LANGSMITH_CLI"
+        ],
+        "x-enum-varnames": [
+          "SourceLangSmithCLI"
+        ]
       },
       "query.PublicSharedTraceRunsRequestBody": {
         "type": "object",
@@ -82564,6 +82996,38 @@
           },
           "content_type": {
             "type": "string"
+          },
+          "csp_sandbox_flags": {
+            "description": "CSPSandboxFlags loosen the CSP sandbox the file is served under; omit for the most restrictive policy.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "allow-downloads",
+                "allow-forms",
+                "allow-modals",
+                "allow-orientation-lock",
+                "allow-pointer-lock",
+                "allow-popups",
+                "allow-presentation",
+                "allow-scripts",
+                "allow-top-navigation-by-user-activation"
+              ]
+            }
+          },
+          "csp_source_bundles": {
+            "description": "CSPSourceBundles allow the served file to fetch from named third-party origins; omit to send no fetch directive.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "cdnjs",
+                "google-fonts",
+                "jsdelivr",
+                "unpkg",
+                "none"
+              ]
+            }
           },
           "expires_in_seconds": {
             "description": "ExpiresInSeconds is optional; a link with no expiry never expires.",
@@ -85844,6 +86308,9 @@
     },
     {
       "name": "fleet users"
+    },
+    {
+      "name": "productfeedback"
     }
   ]
 }
