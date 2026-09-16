@@ -1007,7 +1007,7 @@ Security checklist:
       <Prompt
     description="Connect LangChain docs MCP servers"
     icon="plug"
-    actions={["copy", "cursor"]}
+    actions={["copy"]}
 >
 Connect both LangChain documentation MCP servers to my coding agent so it can look up current LangChain, LangGraph, and LangSmith docs and API reference.
 
@@ -1030,7 +1030,7 @@ Do not invent alternate MCP URLs. After configuring, confirm both servers are li
       <Prompt
     description="Install LangChain Skills"
     icon="puzzle"
-    actions={["copy", "cursor"]}
+    actions={["copy"]}
 >
 Install LangChain Skills for my coding agent so it can perform better on LangChain, LangGraph, and Deep Agents tasks.
 
@@ -1444,6 +1444,12 @@ git clone https://github.com/langchain-ai/docs.git
 cd docs
 ```
 
+Install the pinned toolchain with [mise](https://mise.jdx.dev/getting-started.html), which reads the versions of Python, Node.js, uv, Vale, and the Mintlify CLI from `.mise.toml` and installs the repository's git hooks:
+
+```bash
+mise trust && mise install
+```
+
 ```bash
 make install
 ```
@@ -1462,7 +1468,7 @@ This starts a development server with hot reload at `http://localhost:3000`. Edi
       <Prompt
     description="Connect LangChain docs MCP servers"
     icon="plug"
-    actions={["copy", "cursor"]}
+    actions={["copy"]}
 >
 Connect both LangChain documentation MCP servers to my coding agent so it can look up current LangChain, LangGraph, and LangSmith docs and API reference.
 
@@ -1485,7 +1491,7 @@ Do not invent alternate MCP URLs. After configuring, confirm both servers are li
       <Prompt
     description="Install LangChain Skills"
     icon="puzzle"
-    actions={["copy", "cursor"]}
+    actions={["copy"]}
 >
 Install LangChain Skills for my coding agent so it can perform better on LangChain, LangGraph, and Deep Agents tasks.
 
@@ -1503,6 +1509,7 @@ npx skills add langchain-ai/langchain-skills --skill '*' --yes --global
 
 Detect which agent or editor I am using. If I use Claude Code and prefer the plugin path, follow the marketplace install from that repository README (`/plugin marketplace add` then `/plugin install`). Do not invent alternate skill package names or install URLs. After installing, confirm the skills are available to the agent.
 </Prompt>
+    - This repository ships its own authoring skills in `.agents/skills/`, covering page creation, navigation placement, and redirects. Most agents read that path directly. For Claude Code, run `make skills` to link them.
 </Tip>
 
 <Tip>
@@ -1510,10 +1517,12 @@ If you are having issues with you local preview, try running `mint update` to en
 </Tip>
 
 <Accordion title="Prerequisites">
+    **Recommended:** run `mise trust && mise install` to get every pinned version at once. `.mise.toml` is the canonical pin for the toolchain, and its postinstall hook wires up the pre-commit and pre-push hooks.
+
     **Required:**
     - Python 3.13+
-    - [uv](https://docs.astral.sh/uv/) - Python package manager
-    - [Node.js](https://nodejs.org/en) and npm
+    - [uv](https://docs.astral.sh/uv/) 0.9.26 or later - Python package manager
+    - [Node.js](https://nodejs.org/en) 22.x and npm. Mintlify does not support Node 25 or later
     - [Make](https://www.gnu.org/software/make/)
     - [Git](https://git-scm.com/)
 
@@ -3340,13 +3349,6 @@ Source: https://docs.langchain.com/oss/javascript/deepagents/async-subagents
 Async subagents let a supervisor agent launch background tasks that return immediately, so the supervisor can continue interacting with the user while subagents work concurrently. The supervisor can check progress, send follow-up instructions, or cancel tasks at any point.
 
 This builds on [subagents](/oss/javascript/deepagents/subagents), which run synchronously and block the supervisor until completion. Use async subagents when tasks are long-running, parallelizable, or need mid-flight steering.
-
-<Note>
-
-
-Async subagents are a preview feature available in `deepagents` 1.9.0. Preview features are under active development and APIs may change.
-
-</Note>
 
 ```mermaid
 graph TB
@@ -6803,6 +6805,10 @@ const researchSubagent = {
 };
 ```
 
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/3f16f08a-46ef-4b67-9dab-5d2478341843/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
+
 
 3. **Use the filesystem for large data**: Subagents can write results to files; the main agent reads what it needs.
 
@@ -6967,6 +6973,10 @@ The `CompositeBackend` is a hybrid storage system where some files persist indef
     });
     ```
 </CodeGroup>
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/5b8bfe15-a23f-4b74-b406-3e4e6f0ab709/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
 
 
 You do not need to pre-populate `/memories/` with files.
@@ -7858,7 +7868,7 @@ npm install @langchain/mcp-adapters
     const tools = await client.getTools();
     
     const agent = await createDeepAgent({
-        model: "anthropic:claude-sonnet-5",
+        model: "anthropic:claude-sonnet-4-6",
         tools,
     });
     
@@ -9736,7 +9746,7 @@ const skillContent = await response.text();
 skillsFiles["/skills/langgraph-docs/SKILL.md"] = createFileData(skillContent);
 
 const agent = await createDeepAgent({
-  model: "google-genai:gemini-3.1-pro-preview",
+  model: "anthropic:claude-sonnet-4-6",
   backend,
   checkpointer, // Required !
   // IMPORTANT: deepagents skill source paths are virtual (POSIX) paths relative to the backend root.
@@ -9776,7 +9786,7 @@ await backend.uploadFiles([
 ]);
 
 const agent = await createDeepAgent({
-  model: "google-genai:gemini-3.1-pro-preview",
+  model: "anthropic:claude-sonnet-4-6",
   backend,
   store,
   checkpointer,
@@ -9815,7 +9825,7 @@ await backend.uploadFiles([
 ]);
 
 const agent = await createDeepAgent({
-  model: "google-genai:gemini-3.1-pro-preview",
+  model: "anthropic:claude-sonnet-4-6",
   backend,
   // IMPORTANT: deepagents skill source paths are virtual (POSIX) paths relative to the backend root.
   skills: ["/skills/"],
@@ -10195,6 +10205,10 @@ You can pass one or more file paths to the `memory` parameter when creating your
     );
     ```
 </CodeGroup>
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/5c07e925-9d8f-4792-b73c-9dbee94890cd/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
     </Tab>
     <Tab title="StoreBackend">
         <CodeGroup>
@@ -10590,6 +10604,10 @@ You can pass one or more file paths to the `memory` parameter when creating your
     );
     ```
 </CodeGroup>
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/ff0f387f-c0c3-4456-8081-d6fc23504942/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
     </Tab>
     <Tab title="Filesystem">
         <CodeGroup>
@@ -10823,6 +10841,10 @@ console.log(result.structuredResponse);
 //   forecast: 'Clear skies with temperatures remaining mild. High of 18°C (64°F) during the day, dropping to around 11°C (52°F) at night.'
 // }
 ```
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/e4587886-ebb6-4fbc-8b57-d41b27180770/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
 
 
 
@@ -13556,6 +13578,8 @@ for await (const subagent of stream.subagents) {
 
   subagentNames.push(subagent.name);
 }
+
+await stream.output;
 ```
 
 
@@ -13616,6 +13640,10 @@ await Promise.all(watchers);
 console.log({ running, completed, failed });
 ```
 
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/1d3f1455-4a9c-4607-aa1d-115948f2e1fa/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
+
 
 
 ## Stream messages
@@ -13629,8 +13657,9 @@ const stream = await agent.streamEvents(input, { version: "v3" });
 
 const coordinatorMessages: string[] = [];
 for await (const message of stream.messages) {
-  console.log("[coordinator]", await message.text);
-  coordinatorMessages.push(await message.text);
+  const text = await message.text;
+  console.log("[coordinator]", text);
+  coordinatorMessages.push(text);
 }
 
 for await (const subagent of stream.subagents) {
@@ -13638,6 +13667,8 @@ for await (const subagent of stream.subagents) {
     console.log(`[${subagent.name}]`, await message.text);
   }
 }
+
+await stream.output;
 ```
 
 
@@ -13670,6 +13701,10 @@ for await (const subagent of stream.subagents) {
   }
 }
 ```
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/3fdda16a-c42c-4931-81f5-36e4a4ecfc5c/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
 
 
 ## Stream nested work
@@ -13704,6 +13739,10 @@ for await (const subagent of stream.subagents) {
 }
 ```
 
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/0b947581-de0c-491e-96c1-ba37cc862b0e/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
+
 
 ## Consume concurrently
 
@@ -13734,6 +13773,10 @@ await Promise.all([
 ]);
 ```
 
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/467e4c96-80a0-42ba-9f5f-d869b74e5899/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
+
 
 When you need exact arrival order across the coordinator and all subagents, iterate raw protocol events and use `namespace` to identify the source:
 
@@ -13760,6 +13803,10 @@ for await (const event of stream) {
   }
 }
 ```
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/4113a4d2-b6d8-4f2a-ad1d-2ab9e29859e6/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
 
 
 ## Subagents versus subgraphs
@@ -16095,6 +16142,10 @@ The two are independent and almost always passed together:
     ```
 </CodeGroup>
 
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/92d99101-7d19-46ac-8050-24d1cad6039b/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
+
 When deploying with the LangGraph SDK, the SDK manages threads for you and you pass the returned `thread_id` to each run:
 
 ```typescript
@@ -18299,6 +18350,19 @@ See [Profiles](/oss/javascript/deepagents/profiles) for the full field list, mer
     For shaping how the *agent* behaves once the model is built, use a [harness profile](/oss/javascript/deepagents/profiles#harness-profiles).
 </Tip>
 
+### OpenAI and the Responses API
+
+When you pass an `openai:...` string as the model, Deep Agents uses the built-in OpenAI [provider profile](/oss/javascript/deepagents/profiles#provider-profiles) to enable the [Responses API](/oss/javascript/integrations/chat/openai#responses-api) by default. That path supports OpenAI conversation state and related features; see the [OpenAI provider](/oss/javascript/integrations/providers/openai) and [chat model](/oss/javascript/integrations/chat/openai) docs for current API options.
+
+<Note>
+    The built-in OpenAI provider profile applies only to model strings. To set kwargs such as `use_responses_api`, `store`, or `include`, pass a configured model instance, or, in Python, layer them through a [provider profile](/oss/javascript/deepagents/profiles#provider-profiles) `init_kwargs`. Build the instance with [`init_chat_model`](https://reference.langchain.com/javascript/langchain/chat_models/universal/initChatModel) (Python) or `initChatModel` / `ChatOpenAI` (TypeScript).
+</Note>
+
+
+
+Use the [OpenAI chat integration](/oss/javascript/integrations/chat/openai#responses-api) to choose the Responses API versus Chat Completions (`useResponsesApi`, model kwargs, and any storage or output options your version exposes). Pass the resulting model instance to `createDeepAgent({ model })` so those settings are preserved.
+
+
 ## Select a model at runtime
 
 If your application lets users choose a model (for example using a dropdown in the UI), use [middleware](/oss/javascript/langchain/middleware) to swap the model at runtime without rebuilding the agent.
@@ -18335,6 +18399,10 @@ const result = await agent.invoke(
   { context: { model: "openai:gpt-5.5" } },
 );
 ```
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/89e1089d-632c-4338-b4bb-c019f4c18e14/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
 
 
 <Tip>
@@ -18566,6 +18634,10 @@ console.log(
   }),
 );
 ```
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/7837efa6-ba5d-44f4-a88c-7cabaa4d18cb/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
 
 
 See the [Quickstart](/oss/javascript/deepagents/quickstart/) and [Customization guide](/oss/javascript/deepagents/customization/) to get started building your own agents and applications with Deep Agents.
@@ -19438,7 +19510,7 @@ This guide walks you through creating your first deep agent with file system too
 <Prompt
     description="Build the Deep Agents research quickstart"
     icon="sparkles"
-    actions={["copy", "cursor"]}
+    actions={["copy"]}
 >
 Build a Deep Agents research agent in this working directory by following the Deep Agents quickstart.
 
@@ -19481,7 +19553,7 @@ Follow the quickstart steps in order:
       <Prompt
     description="Connect LangChain docs MCP servers"
     icon="plug"
-    actions={["copy", "cursor"]}
+    actions={["copy"]}
 >
 Connect both LangChain documentation MCP servers to my coding agent so it can look up current LangChain, LangGraph, and LangSmith docs and API reference.
 
@@ -19504,7 +19576,7 @@ Do not invent alternate MCP URLs. After configuring, confirm both servers are li
       <Prompt
     description="Install LangChain Skills"
     icon="puzzle"
-    actions={["copy", "cursor"]}
+    actions={["copy"]}
 >
 Install LangChain Skills for my coding agent so it can perform better on LangChain, LangGraph, and Deep Agents tasks.
 
@@ -20126,6 +20198,10 @@ Pass that question to a [Deep Agent](/oss/javascript/deepagents/overview) with n
     console.log(result.messages.at(-1)?.text);
     ```
 </CodeGroup>
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/55e6f247-1ae3-4542-bd54-75734ebeb6a0/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
 
 
 Without retrieval, the agent cannot look up current LangChain documentation. Responses tend to be generic, may omit guidance such as [subagent streaming](/oss/javascript/deepagents/frontend/subagent-streaming), or include outdated information.
@@ -21072,7 +21148,7 @@ For more on this topic, see research on [prompt injection](https://simonwillison
 
 ## Full code
 
-The following is the complete script for the agent using Gemini. For other models please see the step-by-step approach to see what changes:
+The following is the complete script for the agent using one set of example models. For other models please see the step-by-step approach to see what changes:
 
 
 
@@ -21240,7 +21316,7 @@ Save as `agent.ts` and run with `npx tsx agent.ts`:
     };
     
     const agent = createDeepAgent({
-      model: "google-genai:gemini-3.6-flash",
+      model: "anthropic:claude-sonnet-4-6",
       tools: [searchDocumentation],
       backend,
       systemPrompt: instructions,
@@ -21424,7 +21500,7 @@ Save as `agent.ts` and run with `npx tsx agent.ts`:
     };
     
     const agent = createDeepAgent({
-      model: "google-genai:gemini-3.6-flash",
+      model: "anthropic:claude-sonnet-4-6",
       tools: [searchDocumentation],
       backend,
       systemPrompt: instructions,
@@ -21608,7 +21684,7 @@ Save as `agent.ts` and run with `npx tsx agent.ts`:
     };
     
     const agent = createDeepAgent({
-      model: "google-genai:gemini-3.6-flash",
+      model: "anthropic:claude-sonnet-4-6",
       tools: [searchDocumentation],
       backend,
       systemPrompt: instructions,
@@ -21792,7 +21868,7 @@ Save as `agent.ts` and run with `npx tsx agent.ts`:
     };
     
     const agent = createDeepAgent({
-      model: "google-genai:gemini-3.6-flash",
+      model: "anthropic:claude-sonnet-4-6",
       tools: [searchDocumentation],
       backend,
       systemPrompt: instructions,
@@ -21976,7 +22052,7 @@ Save as `agent.ts` and run with `npx tsx agent.ts`:
     };
     
     const agent = createDeepAgent({
-      model: "google-genai:gemini-3.6-flash",
+      model: "anthropic:claude-sonnet-4-6",
       tools: [searchDocumentation],
       backend,
       systemPrompt: instructions,
@@ -22160,7 +22236,7 @@ Save as `agent.ts` and run with `npx tsx agent.ts`:
     };
     
     const agent = createDeepAgent({
-      model: "google-genai:gemini-3.6-flash",
+      model: "anthropic:claude-sonnet-4-6",
       tools: [searchDocumentation],
       backend,
       systemPrompt: instructions,
@@ -22344,7 +22420,7 @@ Save as `agent.ts` and run with `npx tsx agent.ts`:
     };
     
     const agent = createDeepAgent({
-      model: "google-genai:gemini-3.6-flash",
+      model: "anthropic:claude-sonnet-4-6",
       tools: [searchDocumentation],
       backend,
       systemPrompt: instructions,
@@ -24030,6 +24106,10 @@ These examples assume you have already created a sandbox/devbox using the provid
     ```
 </CodeGroup>
 
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/736ab6fc-a61c-4ee8-bfbc-dde6bd19382c/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
+
 
 
 
@@ -24519,6 +24599,10 @@ try {
 }
 ```
 
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/8542aece-b18a-4f24-8ff1-3bc1a0737104/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
+
 
 
 The examples in this doc use the sandbox as a tool pattern.
@@ -24872,6 +24956,10 @@ const result = await agent.invoke(
 );
 ```
 
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/637067d5-ee65-481b-a13e-3b3944551e9a/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
+
 
 </Step>
 </Steps>
@@ -25066,7 +25154,7 @@ const skillContent = await response.text();
 skillsFiles["/skills/langgraph-docs/SKILL.md"] = createFileData(skillContent);
 
 const agent = await createDeepAgent({
-  model: "google-genai:gemini-3.1-pro-preview",
+  model: "anthropic:claude-sonnet-4-6",
   backend,
   checkpointer, // Required !
   // IMPORTANT: deepagents skill source paths are virtual (POSIX) paths relative to the backend root.
@@ -25106,7 +25194,7 @@ await backend.uploadFiles([
 ]);
 
 const agent = await createDeepAgent({
-  model: "google-genai:gemini-3.1-pro-preview",
+  model: "anthropic:claude-sonnet-4-6",
   backend,
   store,
   checkpointer,
@@ -25145,7 +25233,7 @@ await backend.uploadFiles([
 ]);
 
 const agent = await createDeepAgent({
-  model: "google-genai:gemini-3.1-pro-preview",
+  model: "anthropic:claude-sonnet-4-6",
   backend,
   // IMPORTANT: deepagents skill source paths are virtual (POSIX) paths relative to the backend root.
   skills: ["/skills/"],
@@ -25167,13 +25255,13 @@ const result = await agent.invoke(
 </Tabs>
 
 
-## Load skills at runtime
+## Skill availability
 
-When you have a large collection of skills but only a subset is relevant for a given run, select which skills to load based on runtime context such as user role, tenant, or request type. There are two main approaches:
+Not every run needs every skill. Control which skills the agent can see by choosing the paths passed to `skills`, by resolving those paths against context-specific storage, or by combining multiple skill sources. The context can come from a request handler, auth claims, a graph factory, deployment configuration, or any other application logic.
 
-### Dynamic skill lists
+### Select skills by context
 
-The simplest approach is to construct the `skills` array before creating the agent. Choose which skill paths to include based on whatever runtime context you have:
+Choose the `skills` array before creating the agent. Use this when skills live in a common location and your application decides which paths apply to the current role, tenant, user, or request type:
 
 
 
@@ -25203,7 +25291,7 @@ function createAgentForUser(userRole: string) {
 ```
 
 
-This works well when skills live on disk or in a shared backend and you just need to control which ones the agent sees. The skills themselves are not duplicated — you maintain one copy and vary the paths passed to each run.
+This pattern keeps one maintained copy of each skill and varies only the paths passed to each agent. In deployments, a graph factory is a natural place to parse user information and construct the agent with the right skill paths.
 
 <Note>
     The SDK only loads the sources you pass in `skills`. It does not automatically scan CLI directories such as `~/.deepagents/...` or `~/.agents/...`.
@@ -25228,9 +25316,11 @@ This works well when skills live on disk or in a shared backend and you just nee
     </Accordion>
 </Note>
 
-### Namespaced skills
+### Isolate skill libraries
 
-For multi-tenant applications where each user's skill set is managed independently, route `/skills/` to a [StoreBackend](https://reference.langchain.com/javascript/deepagents/backends/StoreBackend) with a namespace factory. Populate each namespace with only the skills that user should have access to, and the middleware resolves to the correct set at runtime:
+Use isolated libraries when the same skill path should resolve to different files for different users, roles, tenants, workspaces, or environments. For example, every agent can receive `skills=["/skills/"]`, while the backend resolves `/skills/` against storage scoped to the current identity or deployment context.
+
+The following example uses [StoreBackend](https://reference.langchain.com/javascript/deepagents/backends/StoreBackend), but the same pattern applies to any backend that can resolve files based on runtime context:
 
 
 
@@ -25257,7 +25347,34 @@ const agent = await createDeepAgent({
 ```
 
 
-This pattern is useful when different users or tenants need fully independent skill libraries that can be updated separately. For a managed solution that handles skill access, sharing, and workspace-level visibility out of the box, see [Fleet skills](/langsmith/fleet/skills).
+This keeps the agent configuration stable while the backend enforces which library the agent can access. The scope does not need to be user-specific. It can be any boundary your application uses, including role, tenant, workspace, organization, environment, or request type.
+
+To populate a shared library, seed the store from your application code or an admin workflow:
+
+- Namespace by org ID for workspace-wide skills. Pair this with [read-only skills](#read-only-skills) when agents should use the library but not modify it.
+- Namespace by user ID when each user needs an independent library, as in the example above.
+
+Seed the store with keys like `/company-policies/SKILL.md` and values that include `content` and `encoding` fields. The `/skills/` route prefix is stripped before records are read from the store.
+
+You can also combine shared and personal libraries: route `/skills/approved/` to an organization-scoped `StoreBackend`, route `/skills/editable/` to a user-scoped backend, and pass both paths in `skills`. See [Writable skills](#writable-skills).
+
+### Compose multiple sources
+
+Pass multiple skill paths when the agent should see more than one library. For example, you can combine approved organization skills, team-specific workflows, and request-specific instructions:
+
+
+
+```ts
+import { createDeepAgent } from "deepagents";
+
+const agent = await createDeepAgent({
+  model: "anthropic:claude-sonnet-4-6",
+  skills: ["/skills/org/", "/skills/team/", "/skills/request/"],
+});
+```
+
+
+Each path can point to the same backend, a different backend route, or a backend scoped by runtime context. For a managed solution that handles skill access, sharing, and workspace-level visibility, see [Fleet skills](/langsmith/fleet/skills).
 
 ## Skills for subagents
 
@@ -25293,33 +25410,11 @@ For more information on subagent configuration and skills inheritance, see [Suba
 
 ## Skill permissions
 
-Production deployments usually need to control three things: which skills each user can see, whether the agent can modify skill files, and whether writes require human approval. You control visibility with the `skills` argument and [backend routing](#backends-and-remote-skill-loading), access with [filesystem permissions](/oss/javascript/deepagents/permissions), and approval with [`interrupt_on`](/oss/javascript/deepagents/human-in-the-loop) or permission rules with `mode="interrupt"`.
+Skill availability controls which skill files the agent can see. Skill permissions control whether the agent can read those files, write to them, or pause for human approval before writing. Use [filesystem permissions](/oss/javascript/deepagents/permissions) for path-based read and write rules, and use [`interrupt_on`](/oss/javascript/deepagents/human-in-the-loop) or permission rules with `mode="interrupt"` when writes need approval.
 
-### Share skills across users
+### Read-only skills
 
-To give every user access to the same curated library, route `/skills/` to a shared [StoreBackend](https://reference.langchain.com/javascript/deepagents/backends/StoreBackend) and seed it from your application code or an admin workflow. Use an organization-scoped namespace so all agents in that org resolve to the same store:
-
-- Namespace by org ID for workspace-wide skills (see [Enforce read-only skills](#enforce-read-only-skills)).
-- Namespace by user ID when each user needs an independent library ([namespaced skills](#namespaced-skills)).
-
-Seed the store with keys like `/company-policies/SKILL.md` and values that include `content` and `encoding` fields. The `/skills/` route prefix is stripped before records are read from the store.
-
-For a managed solution that handles skill access, sharing, and workspace-level visibility, see [Fleet skills](/langsmith/fleet/skills).
-
-You can also combine shared and personal libraries: route `/skills/shared/` to an organization-scoped `StoreBackend`, route `/skills/personal/` to a user-scoped backend, and pass both paths in `skills`. See [Allow agents to edit personal skills](#allow-agents-to-edit-personal-skills).
-
-### Limit skills by user context
-
-Not every user should see every skill. Control which skills load at runtime based on role, tenant, or other request context. There are two main approaches:
-
-- **[Dynamic skill lists](#dynamic-skill-lists)** — Build the `skills` array before creating the agent. Pass different path lists for different roles or request types. Works when skills live in a shared backend and you filter by path.
-- **[Namespaced skills](#namespaced-skills)** — Route `/skills/` to a `StoreBackend` with a namespace factory keyed on user or tenant ID. Populate each namespace with only the skills that identity should access.
-
-These patterns work alongside the read and write controls below. For example, you can give admins a larger skill set than engineers while keeping both libraries read-only.
-
-### Enforce read-only skills
-
-To share skills without letting agents modify them, route `/skills/` to a shared store and deny write operations under `/skills/**` with [filesystem permissions](/oss/javascript/deepagents/permissions). The agent can discover and read skills; only your application code or an admin workflow updates the store.
+To let agents use a curated skill library without modifying it, route the skill path to the backend that contains the approved library and deny write operations under that path. The agent can discover and read skills; only your application code or an admin workflow updates the backend.
 
 
 
@@ -25537,9 +25632,58 @@ To share skills without letting agents modify them, route `/skills/` to a shared
 
 
 
-Use this for enterprise knowledge bases, approved tool instructions, or shared skill packs where the agent should benefit from centrally managed context but should not rewrite the source of truth.
+Use this for enterprise knowledge bases, approved tool instructions, or centrally managed skill packs where the agent should use the content but should not rewrite the source of truth.
 
-### Require approval for skill writes
+### Writable skills
+
+By default, agents can write to skill files if the backend permits it and no permission rule blocks the path. To let agents create or refine some skills while protecting others:
+
+1. Route writable paths to a backend that can persist agent edits.
+2. Pass those paths in `skills`.
+3. Add `deny` rules for any paths that should stay read-only. Place more specific rules before broader deny rules if paths overlap ([rule ordering](/oss/javascript/deepagents/permissions#rule-ordering)).
+
+
+
+```ts
+import { InMemoryStore } from "@langchain/langgraph";
+import {
+  createDeepAgent,
+  CompositeBackend,
+  StateBackend,
+  StoreBackend,
+} from "deepagents";
+
+const store = new InMemoryStore(); // Good for local dev; omit for LangSmith Deployment
+
+const agent = await createDeepAgent({
+  model: "anthropic:claude-sonnet-4-6",
+  backend: new CompositeBackend(new StateBackend(), {
+    "/skills/approved/": new StoreBackend({
+      namespace: (rt) => ["approved-skills", rt.context.orgId],
+    }),
+    "/skills/editable/": new StoreBackend({
+      namespace: (ctx) => [
+        "editable-skills",
+        ctx.config?.configurable?.user_id ?? "anonymous",
+      ],
+    }),
+  }),
+  skills: ["/skills/approved/", "/skills/editable/"],
+  permissions: [
+    {
+      operations: ["write"],
+      paths: ["/skills/approved/**"],
+      mode: "deny",
+    },
+  ],
+  store,
+});
+```
+
+
+The agent uses `write_file` and `edit_file` to create or update `SKILL.md` and supporting files under writable paths. To capture general learnings outside the skills format, route a separate path such as `/memories/` to another writable backend. See [Backends](/oss/javascript/deepagents/backends) for routing and store setup.
+
+### Write approval
 
 If agents may write to skill files but you want a human in the loop first, use either [`interrupt_on`](/oss/javascript/deepagents/human-in-the-loop) or a permission rule with `mode="interrupt"`. Both pause before `write_file` or `edit_file` runs and use the same resume flow.
 
@@ -25551,7 +25695,7 @@ import { createDeepAgent } from "deepagents";
 
 const agent = await createDeepAgent({
   model: "anthropic:claude-sonnet-4-6",
-  skills: ["/skills/personal/"],
+  skills: ["/skills/editable/"],
   permissions: [
     {
       operations: ["write"],
@@ -25567,51 +25711,6 @@ const agent = await createDeepAgent({
 Alternatively, configure `interrupt_on={"write_file": True, "edit_file": True}` to require approval for all filesystem writes, not only skills paths. See [Human-in-the-loop](/oss/javascript/deepagents/human-in-the-loop) for handling and resuming interrupts.
 
 
-
-### Allow agents to edit personal skills
-
-By default, agents can write to skill files if the backend permits it and no permission rule blocks the path. To let agents create or refine skills without touching shared libraries:
-
-1. Route a writable path such as `/skills/personal/` to a user-scoped `StoreBackend`.
-2. Pass that path (along with any shared paths) in `skills`.
-3. Do not add a `deny` rule for the writable path. Place more specific rules before broader deny rules if you mix shared and personal paths ([rule ordering](/oss/javascript/deepagents/permissions#rule-ordering)).
-
-
-
-```ts
-import {
-  createDeepAgent,
-  CompositeBackend,
-  StateBackend,
-  StoreBackend,
-} from "deepagents";
-
-const agent = await createDeepAgent({
-  model: "anthropic:claude-sonnet-4-6",
-  backend: new CompositeBackend(new StateBackend(), {
-    "/skills/shared/": new StoreBackend({
-      namespace: (rt) => ["curated-skills", rt.context.orgId],
-    }),
-    "/skills/personal/": new StoreBackend({
-      namespace: (ctx) => [
-        "user-skills",
-        ctx.config?.configurable?.user_id ?? "anonymous",
-      ],
-    }),
-  }),
-  skills: ["/skills/shared/", "/skills/personal/"],
-  permissions: [
-    {
-      operations: ["write"],
-      paths: ["/skills/shared/**"],
-      mode: "deny",
-    },
-  ],
-});
-```
-
-
-The agent uses `write_file` and `edit_file` to create or update `SKILL.md` and supporting files under the writable path. To capture general learnings outside the skills format, route a separate path such as `/memories/` to another writable backend. See [Backends](/oss/javascript/deepagents/backends) for routing and store setup.
 
 ## Execute code with skills
 
@@ -26634,6 +26733,10 @@ The agent can _read_ scripts from any backend, but to _execute_ them, the agent 
     ```
 </CodeGroup>
 
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/a81cf81d-7f30-4bb8-99a0-1e90554fc8c4/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
+
 
 For a complete example that seeds both skills and memories before execution and syncs both back afterward, see [syncing skills and memories with custom middleware](/oss/javascript/deepagents/going-to-production#example-syncing-skills-and-memories-with-custom-middleware).
 
@@ -27054,6 +27157,10 @@ Deep Agents use LangGraph's subgraph streaming to surface events from subagent e
     ```
 </CodeGroup>
 
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/c168526d-4120-4f09-8714-4a45a6446598/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
+
 
 ## Namespaces
 
@@ -27090,6 +27197,10 @@ for await (const [namespace, chunk] of await agent.stream(
   }
 }
 ```
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/29fabe2e-590d-45a1-bb2e-6d7491103625/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
 
 
 ## Subagent progress
@@ -27478,6 +27589,10 @@ Use `stream_mode="updates"` to track subagent progress as each step completes. T
     ```
 </CodeGroup>
 
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/6892dbbe-d797-44da-974f-d78cd433299e/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
+
 ```shell title="Output"
 Main agent step: model_request
   [tools:call_abc123] step: model_request
@@ -27544,6 +27659,10 @@ for await (const [namespace, chunk] of await agent.stream(
 process.stdout.write("\n");
 ```
 
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/eae65ae1-ab35-412c-8769-465a7ee1ac0e/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
+
 
 ## Tool calls
 
@@ -27605,6 +27724,10 @@ for await (const [namespace, chunk] of await agent.stream(
 
 process.stdout.write("\n");
 ```
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/b691dfbe-3eea-472b-92a3-7200ce7fd48d/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
 
 
 ## Custom updates
@@ -28136,6 +28259,10 @@ Use `config.writer` inside your subagent tools to emit custom progress events:
     ```
 </CodeGroup>
 
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/8b328f38-ab1e-42f3-be42-4364118ec3f1/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
+
 ```shell title="Output"
 [tools:call_abc123] { status: 'fetching', progress: 0 }
 [tools:call_abc123] { status: 'analyzing', progress: 50 }
@@ -28205,6 +28332,10 @@ for await (const [namespace, mode, data] of await agent.stream(
 
 process.stdout.write("\n");
 ```
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/abec3125-178c-474a-b0c4-9e4cb553eb63/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
 
 
 ## Common patterns
@@ -28328,6 +28459,10 @@ for (const [id, sub] of activeSubagents) {
   console.log(`  ${sub.type}: ${sub.status}`);
 }
 ```
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/7c7546e0-f99a-4655-bf0c-550f94ebdff3/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
 
 
 
@@ -29236,7 +29371,7 @@ const commentWriter = {
 };
 
 const agent = await createDeepAgent({
-  model: "google-genai:gemini-3.7-flash",
+  model: "anthropic:claude-sonnet-4-6",
   tools: [readDiff],
   subagents: [commentWriter],
 });
@@ -29507,6 +29642,7 @@ The simplest pattern is to iterate `stream.subagents` to track each delegated ta
     
     const agent = createDeepAgent({
       model: "google-genai:gemini-3.6-flash",
+      name: "main-agent",
       systemPrompt:
         "You are a project coordinator with no research knowledge. " +
         "For every user request, you must call the task() tool with " +
@@ -29541,8 +29677,9 @@ The simplest pattern is to iterate `stream.subagents` to track each delegated ta
       await Promise.all([
         (async () => {
           for await (const message of stream.messages) {
-            console.log("[coordinator]", await message.text);
-            coordinatorMessages.push(await message.text);
+            const text = await message.text;
+            console.log("[coordinator]", text);
+            coordinatorMessages.push(text);
           }
         })(),
         (async () => {
@@ -29554,6 +29691,7 @@ The simplest pattern is to iterate `stream.subagents` to track each delegated ta
             }
           }
         })(),
+        stream.output,
       ]);
     
       return { coordinatorMessages, subagentHandles };
@@ -29565,6 +29703,7 @@ The simplest pattern is to iterate `stream.subagents` to track each delegated ta
     
     const agent = createDeepAgent({
       model: "openai:gpt-5.5",
+      name: "main-agent",
       systemPrompt:
         "You are a project coordinator with no research knowledge. " +
         "For every user request, you must call the task() tool with " +
@@ -29599,8 +29738,9 @@ The simplest pattern is to iterate `stream.subagents` to track each delegated ta
       await Promise.all([
         (async () => {
           for await (const message of stream.messages) {
-            console.log("[coordinator]", await message.text);
-            coordinatorMessages.push(await message.text);
+            const text = await message.text;
+            console.log("[coordinator]", text);
+            coordinatorMessages.push(text);
           }
         })(),
         (async () => {
@@ -29612,6 +29752,7 @@ The simplest pattern is to iterate `stream.subagents` to track each delegated ta
             }
           }
         })(),
+        stream.output,
       ]);
     
       return { coordinatorMessages, subagentHandles };
@@ -29623,6 +29764,7 @@ The simplest pattern is to iterate `stream.subagents` to track each delegated ta
     
     const agent = createDeepAgent({
       model: "anthropic:claude-sonnet-4-6",
+      name: "main-agent",
       systemPrompt:
         "You are a project coordinator with no research knowledge. " +
         "For every user request, you must call the task() tool with " +
@@ -29657,8 +29799,9 @@ The simplest pattern is to iterate `stream.subagents` to track each delegated ta
       await Promise.all([
         (async () => {
           for await (const message of stream.messages) {
-            console.log("[coordinator]", await message.text);
-            coordinatorMessages.push(await message.text);
+            const text = await message.text;
+            console.log("[coordinator]", text);
+            coordinatorMessages.push(text);
           }
         })(),
         (async () => {
@@ -29670,6 +29813,7 @@ The simplest pattern is to iterate `stream.subagents` to track each delegated ta
             }
           }
         })(),
+        stream.output,
       ]);
     
       return { coordinatorMessages, subagentHandles };
@@ -29681,6 +29825,7 @@ The simplest pattern is to iterate `stream.subagents` to track each delegated ta
     
     const agent = createDeepAgent({
       model: "openrouter:openrouter:z-ai/glm-5.2",
+      name: "main-agent",
       systemPrompt:
         "You are a project coordinator with no research knowledge. " +
         "For every user request, you must call the task() tool with " +
@@ -29715,8 +29860,9 @@ The simplest pattern is to iterate `stream.subagents` to track each delegated ta
       await Promise.all([
         (async () => {
           for await (const message of stream.messages) {
-            console.log("[coordinator]", await message.text);
-            coordinatorMessages.push(await message.text);
+            const text = await message.text;
+            console.log("[coordinator]", text);
+            coordinatorMessages.push(text);
           }
         })(),
         (async () => {
@@ -29728,6 +29874,7 @@ The simplest pattern is to iterate `stream.subagents` to track each delegated ta
             }
           }
         })(),
+        stream.output,
       ]);
     
       return { coordinatorMessages, subagentHandles };
@@ -29739,6 +29886,7 @@ The simplest pattern is to iterate `stream.subagents` to track each delegated ta
     
     const agent = createDeepAgent({
       model: "fireworks:accounts/fireworks/models/glm-5p2",
+      name: "main-agent",
       systemPrompt:
         "You are a project coordinator with no research knowledge. " +
         "For every user request, you must call the task() tool with " +
@@ -29773,8 +29921,9 @@ The simplest pattern is to iterate `stream.subagents` to track each delegated ta
       await Promise.all([
         (async () => {
           for await (const message of stream.messages) {
-            console.log("[coordinator]", await message.text);
-            coordinatorMessages.push(await message.text);
+            const text = await message.text;
+            console.log("[coordinator]", text);
+            coordinatorMessages.push(text);
           }
         })(),
         (async () => {
@@ -29786,6 +29935,7 @@ The simplest pattern is to iterate `stream.subagents` to track each delegated ta
             }
           }
         })(),
+        stream.output,
       ]);
     
       return { coordinatorMessages, subagentHandles };
@@ -29797,6 +29947,7 @@ The simplest pattern is to iterate `stream.subagents` to track each delegated ta
     
     const agent = createDeepAgent({
       model: "baseten:zai-org/GLM-5.2",
+      name: "main-agent",
       systemPrompt:
         "You are a project coordinator with no research knowledge. " +
         "For every user request, you must call the task() tool with " +
@@ -29831,8 +29982,9 @@ The simplest pattern is to iterate `stream.subagents` to track each delegated ta
       await Promise.all([
         (async () => {
           for await (const message of stream.messages) {
-            console.log("[coordinator]", await message.text);
-            coordinatorMessages.push(await message.text);
+            const text = await message.text;
+            console.log("[coordinator]", text);
+            coordinatorMessages.push(text);
           }
         })(),
         (async () => {
@@ -29844,6 +29996,7 @@ The simplest pattern is to iterate `stream.subagents` to track each delegated ta
             }
           }
         })(),
+        stream.output,
       ]);
     
       return { coordinatorMessages, subagentHandles };
@@ -29855,6 +30008,7 @@ The simplest pattern is to iterate `stream.subagents` to track each delegated ta
     
     const agent = createDeepAgent({
       model: "ollama:north-mini-code-1.0",
+      name: "main-agent",
       systemPrompt:
         "You are a project coordinator with no research knowledge. " +
         "For every user request, you must call the task() tool with " +
@@ -29889,8 +30043,9 @@ The simplest pattern is to iterate `stream.subagents` to track each delegated ta
       await Promise.all([
         (async () => {
           for await (const message of stream.messages) {
-            console.log("[coordinator]", await message.text);
-            coordinatorMessages.push(await message.text);
+            const text = await message.text;
+            console.log("[coordinator]", text);
+            coordinatorMessages.push(text);
           }
         })(),
         (async () => {
@@ -29902,6 +30057,7 @@ The simplest pattern is to iterate `stream.subagents` to track each delegated ta
             }
           }
         })(),
+        stream.output,
       ]);
     
       return { coordinatorMessages, subagentHandles };
@@ -30279,6 +30435,10 @@ Pass `responseFormat` on the subagent config. When the subagent finishes, its st
     // '{"summary": "...", "confidence": 0.87, "sources": ["https://..."]}'
     ```
 </CodeGroup>
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/6df55bfb-81cc-4272-a5b3-415569581188/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
 
 
 Without `response_format`, the parent receives the subagent's last message text as-is. With it, the parent always gets valid JSON matching the schema, which is useful when the parent needs to process the result programmatically or pass it to downstream tools.
@@ -32068,7 +32228,7 @@ npm install @langchain/mcp-adapters
     const tools = await client.getTools();
     
     const agent = await createDeepAgent({
-      model: "anthropic:claude-sonnet-5",
+      model: "anthropic:claude-sonnet-4-6",
       tools,
     });
     
@@ -39999,7 +40159,7 @@ await fineTunedLlm.invoke("Hi there!");
 If you need additional information like logprobs or token usage, these will be returned directly in the `invoke` response within the `response_metadata` field on the message.
 
 <Info>
-    **Requires `@langchain/core` version >=0.1.48.**
+    **Requires `@langchain/core>=0.1.48`.**
 </Info>
 
 ```typescript
@@ -52245,6 +52405,14 @@ Connect LangGraph agents to front ends and observability platforms.
 <Columns cols={3}>
 
   <Card
+    title="aiworker"
+    href="https://github.com/ai-worker227/aiworker-examples/tree/main/langchain"
+    icon="link"
+  >
+    Paid data tools (DeFi yields, page-to-Markdown, Base token and wallet checks, Polymarket odds, history and backtests, fact checks, headline search) built from aiworker's live OpenAPI catalogue; each call pays itself in USDC over the x402 protocol from the agent's wallet, no API key.
+  </Card>
+
+  <Card
     title="Atomic Mail"
     href="https://atomic-mail.github.io/atomic-mail-agentic/langchain"
     icon="link"
@@ -52258,6 +52426,14 @@ Connect LangGraph agents to front ends and observability platforms.
     icon="brand-windows"
   >
     Secure code execution in Azure Dynamic Sessions.
+  </Card>
+
+  <Card
+    title="Corsair"
+    href="https://docs.corsair.dev/mcp-adapters/langchain"
+    icon="link"
+  >
+    Exposes 200+ service integrations (Slack, GitHub, Gmail, Linear, Stripe, and others) to LangChain agents as tools. OAuth runs server-side and credentials stay in the developer's own database.
   </Card>
 
 
@@ -52350,6 +52526,14 @@ Connect LangGraph agents to front ends and observability platforms.
     href="/oss/javascript/integrations/tools/perplexity_search"
   >
     Web search results from the Perplexity Search API.
+  </Card>
+
+  <Card
+    title="Pushary"
+    href="https://github.com/Pushary/pushary-langgraph"
+    icon="link"
+  >
+    Customer confirmation, choice and text input through an enrolled Pushary mobile app, exposed as a LangChain structured tool.
   </Card>
 
   <Card
@@ -52453,6 +52637,14 @@ Connect LangGraph agents to front ends and observability platforms.
     href="/oss/javascript/integrations/retrievers/exa"
   >
     AI-powered web search and retrieval.
+  </Card>
+
+  <Card
+    title="FoxNose"
+    href="https://github.com/FoxNoseTech/langchain-foxnose-js#readme"
+    icon="link"
+  >
+    Retriever, document loader and agent tool for FoxNose collections, with text, vector, hybrid and vector-boosted search over the Flux delivery API.
   </Card>
 
   <Card
@@ -55145,12 +55337,13 @@ Refer to the vector store [integration docs](/oss/javascript/integrations/vector
 
 | Retriever | Self-host | Cloud offering | Package | Downloads |
 | :--- | :--- | :--- | :--- | :--- |
-| [`AWSKendraRetriever`](/oss/javascript/integrations/retrievers/kendra-retriever) | <span data-sort-value="0"></span> | <span data-sort-value="0"></span> | [`@langchain/aws`](https://www.npmjs.com/package/@langchain/aws) | <span data-sort-value="3181274"><a href="https://www.npmjs.com/package/@langchain/aws" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/aws?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`Knowledge bases for Amazon Bedrock`](/oss/javascript/integrations/retrievers/bedrock-knowledge-bases) | <span data-sort-value="0"></span> | <span data-sort-value="0"></span> | [`@langchain/aws`](https://www.npmjs.com/package/@langchain/aws) | <span data-sort-value="3181274"><a href="https://www.npmjs.com/package/@langchain/aws" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/aws?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`ExaRetriever`](/oss/javascript/integrations/retrievers/exa) | <span data-sort-value="0"></span> | <span data-sort-value="0"></span> | [`@langchain/exa`](https://www.npmjs.com/package/@langchain/exa) | <span data-sort-value="76768"><a href="https://www.npmjs.com/package/@langchain/exa" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/exa?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`PerplexitySearchRetriever`](/oss/javascript/integrations/retrievers/perplexity_search) | <span data-sort-value="0"></span> | <span data-sort-value="0"></span> | [`@langchain/perplexity`](https://www.npmjs.com/package/@langchain/perplexity) | <span data-sort-value="750"><a href="https://www.npmjs.com/package/@langchain/perplexity" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/perplexity?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`AlchemystRetriever`](https://getalchemystai.com/docs) | <span data-sort-value="0"></span> | <span data-sort-value="0"></span> | [`@alchemystai/langchain-js`](https://www.npmjs.com/package/@alchemystai/langchain-js) | <span data-sort-value="39"><a href="https://www.npmjs.com/package/@alchemystai/langchain-js" target="_blank"><img src="https://img.shields.io/npm/dm/@alchemystai/langchain-js?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`SourceyRetriever`](/oss/javascript/integrations/retrievers/sourcey) | <span data-sort-value="0"></span> | <span data-sort-value="0"></span> | [`langchain-sourcey`](https://www.npmjs.com/package/langchain-sourcey) | <span data-sort-value="7"><a href="https://www.npmjs.com/package/langchain-sourcey" target="_blank"><img src="https://img.shields.io/npm/dm/langchain-sourcey?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`AWSKendraRetriever`](/oss/javascript/integrations/retrievers/kendra-retriever) | <span data-sort-value="0"></span> | <span data-sort-value="0"></span> | [`@langchain/aws`](https://www.npmjs.com/package/@langchain/aws) | <span data-sort-value="2940428"><a href="https://www.npmjs.com/package/@langchain/aws" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/aws?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`Knowledge bases for Amazon Bedrock`](/oss/javascript/integrations/retrievers/bedrock-knowledge-bases) | <span data-sort-value="0"></span> | <span data-sort-value="0"></span> | [`@langchain/aws`](https://www.npmjs.com/package/@langchain/aws) | <span data-sort-value="2940428"><a href="https://www.npmjs.com/package/@langchain/aws" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/aws?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`ExaRetriever`](/oss/javascript/integrations/retrievers/exa) | <span data-sort-value="0"></span> | <span data-sort-value="0"></span> | [`@langchain/exa`](https://www.npmjs.com/package/@langchain/exa) | <span data-sort-value="64698"><a href="https://www.npmjs.com/package/@langchain/exa" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/exa?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`PerplexitySearchRetriever`](/oss/javascript/integrations/retrievers/perplexity_search) | <span data-sort-value="0"></span> | <span data-sort-value="0"></span> | [`@langchain/perplexity`](https://www.npmjs.com/package/@langchain/perplexity) | <span data-sort-value="706"><a href="https://www.npmjs.com/package/@langchain/perplexity" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/perplexity?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`AlchemystRetriever`](https://getalchemystai.com/docs) | <span data-sort-value="0"></span> | <span data-sort-value="0"></span> | [`@alchemystai/langchain-js`](https://www.npmjs.com/package/@alchemystai/langchain-js) | <span data-sort-value="50"><a href="https://www.npmjs.com/package/@alchemystai/langchain-js" target="_blank"><img src="https://img.shields.io/npm/dm/@alchemystai/langchain-js?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`FoxNoseRetriever`](https://github.com/FoxNoseTech/langchain-foxnose-js#readme) | <span data-sort-value="1">❌</span> | <span data-sort-value="2">✅</span> | [`@foxnose/langchain`](https://www.npmjs.com/package/@foxnose/langchain) | <span data-sort-value="17"><a href="https://www.npmjs.com/package/@foxnose/langchain" target="_blank"><img src="https://img.shields.io/npm/dm/@foxnose/langchain?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`SourceyRetriever`](/oss/javascript/integrations/retrievers/sourcey) | <span data-sort-value="0"></span> | <span data-sort-value="0"></span> | [`langchain-sourcey`](https://www.npmjs.com/package/langchain-sourcey) | <span data-sort-value="17"><a href="https://www.npmjs.com/package/langchain-sourcey" target="_blank"><img src="https://img.shields.io/npm/dm/langchain-sourcey?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
 | [`Hyde`](/oss/javascript/integrations/retrievers/hyde) | <span data-sort-value="0"></span> | <span data-sort-value="0"></span> |  | <span data-sort-value="-1">N/A</span> |
 | [`Self Querying with SAP HANA Cloud Vector Engine`](/oss/javascript/integrations/retrievers/self_query/hanavector_self_query) | <span data-sort-value="0"></span> | <span data-sort-value="0"></span> |  | <span data-sort-value="-1">N/A</span> |
 | [`Time-weighted`](/oss/javascript/integrations/retrievers/time-weighted-retriever) | <span data-sort-value="0"></span> | <span data-sort-value="0"></span> |  | <span data-sort-value="-1">N/A</span> |
@@ -59227,9 +59420,9 @@ console.log(structuredSchema.relationships);
 
 ## Requirements
 
-- Node.js >= 18
+- Node.js 18 or later
 - FalkorDB server running (Redis-compatible)
-- LangChain >= 0.1.0
+- LangChain 0.1.0 or later
 
 ## Examples
 
@@ -59759,45 +59952,48 @@ The following table shows tools that generate video, image, or audio assets:
 
 | Integration | Downloads |
 | :--- | :--- |
-| [`Dall-e`](/oss/javascript/integrations/tools/dalle) | <span data-sort-value="14480022"><a href="https://www.npmjs.com/package/@langchain/openai" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/openai?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`OpenAI`](/oss/javascript/integrations/tools/openai) | <span data-sort-value="14480022"><a href="https://www.npmjs.com/package/@langchain/openai" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/openai?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`OpenAPI toolkit`](/oss/javascript/integrations/tools/openapi) | <span data-sort-value="12812815"><a href="https://www.npmjs.com/package/@langchain/langgraph" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/langgraph?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`Anthropic`](/oss/javascript/integrations/tools/anthropic) | <span data-sort-value="4980649"><a href="https://www.npmjs.com/package/@langchain/anthropic" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/anthropic?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`Google`](/oss/javascript/integrations/tools/google) | <span data-sort-value="322141"><a href="https://www.npmjs.com/package/@langchain/google" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/google?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`TavilyCrawl`](/oss/javascript/integrations/tools/tavily_crawl) | <span data-sort-value="310875"><a href="https://www.npmjs.com/package/@langchain/tavily" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/tavily?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`TavilyExtract`](/oss/javascript/integrations/tools/tavily_extract) | <span data-sort-value="310875"><a href="https://www.npmjs.com/package/@langchain/tavily" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/tavily?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`TavilyGetResearch`](/oss/javascript/integrations/tools/tavily_get_research) | <span data-sort-value="310875"><a href="https://www.npmjs.com/package/@langchain/tavily" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/tavily?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`TavilyMap`](/oss/javascript/integrations/tools/tavily_map) | <span data-sort-value="310875"><a href="https://www.npmjs.com/package/@langchain/tavily" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/tavily?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`TavilyResearch`](/oss/javascript/integrations/tools/tavily_research) | <span data-sort-value="310875"><a href="https://www.npmjs.com/package/@langchain/tavily" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/tavily?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`TavilySearch`](/oss/javascript/integrations/tools/tavily_search) | <span data-sort-value="310875"><a href="https://www.npmjs.com/package/@langchain/tavily" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/tavily?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`OracleSummary`](/oss/javascript/integrations/tools/oracleai) | <span data-sort-value="169361"><a href="https://www.npmjs.com/package/@oracle/langchain-oracledb" target="_blank"><img src="https://img.shields.io/npm/dm/@oracle/langchain-oracledb?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`ExaSearchResults`](/oss/javascript/integrations/tools/exa_search) | <span data-sort-value="76768"><a href="https://www.npmjs.com/package/@langchain/exa" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/exa?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`Composio`](/oss/javascript/integrations/tools/composio) | <span data-sort-value="50316"><a href="https://www.npmjs.com/package/@composio/langchain" target="_blank"><img src="https://img.shields.io/npm/dm/@composio/langchain?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`Mcp toolbox for databases`](/oss/javascript/integrations/tools/mcp_toolbox) | <span data-sort-value="28635"><a href="https://www.npmjs.com/package/@toolbox-sdk/core" target="_blank"><img src="https://img.shields.io/npm/dm/@toolbox-sdk/core?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`WatsonxToolkit`](/oss/javascript/integrations/tools/ibm) | <span data-sort-value="3845"><a href="https://www.npmjs.com/package/@langchain/ibm" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/ibm?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`AtomicMailToolkit`](https://atomic-mail.github.io/atomic-mail-agentic/langchain) | <span data-sort-value="1471"><a href="https://www.npmjs.com/package/@atomicmail/langchain" target="_blank"><img src="https://img.shields.io/npm/dm/@atomicmail/langchain?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`Jigsawstack`](/oss/javascript/integrations/tools/jigsawstack) | <span data-sort-value="1415"><a href="https://www.npmjs.com/package/@langchain/jigsawstack" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/jigsawstack?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`Bilig WorkPaper`](https://proompteng.github.io/bilig/) | <span data-sort-value="1322"><a href="https://www.npmjs.com/package/@bilig/workpaper" target="_blank"><img src="https://img.shields.io/npm/dm/@bilig/workpaper?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`Fidacy Action Firewall`](https://github.com/fidacy/fidacy-open) | <span data-sort-value="971"><a href="https://www.npmjs.com/package/@fidacy/langchain" target="_blank"><img src="https://img.shields.io/npm/dm/@fidacy/langchain?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`PerplexitySearchResults`](/oss/javascript/integrations/tools/perplexity_search) | <span data-sort-value="750"><a href="https://www.npmjs.com/package/@langchain/perplexity" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/perplexity?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`Decodo`](/oss/javascript/integrations/tools/decodo) | <span data-sort-value="414"><a href="https://www.npmjs.com/package/@decodo/langchain-ts" target="_blank"><img src="https://img.shields.io/npm/dm/@decodo/langchain-ts?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`Falkordb`](/oss/javascript/integrations/tools/falkordb) | <span data-sort-value="389"><a href="https://www.npmjs.com/package/@falkordb/langchain-ts" target="_blank"><img src="https://img.shields.io/npm/dm/@falkordb/langchain-ts?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`TalorDataSerpTool`](https://docs.talordata.com/serp-api/integration/sdk-integration/how-to-set-up-talordata-with-langchain) | <span data-sort-value="349"><a href="https://www.npmjs.com/package/langchain-talordata" target="_blank"><img src="https://img.shields.io/npm/dm/langchain-talordata?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`Azure container apps dynamic sessions`](/oss/javascript/integrations/tools/azure_dynamic_sessions) | <span data-sort-value="194"><a href="https://www.npmjs.com/package/@langchain/azure-dynamic-sessions" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/azure-dynamic-sessions?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`MagicHourTools`](https://docs.magichour.ai) | <span data-sort-value="142"><a href="https://www.npmjs.com/package/langchain-magic-hour" target="_blank"><img src="https://img.shields.io/npm/dm/langchain-magic-hour?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`You.com search tools`](https://you.com/docs/integrations/langchain) | <span data-sort-value="117"><a href="https://www.npmjs.com/package/@youdotcom-oss/langchain" target="_blank"><img src="https://img.shields.io/npm/dm/@youdotcom-oss/langchain?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`The Context Company`](https://docs.thecontextcompany.com/frameworks/langchain-langgraph) | <span data-sort-value="95"><a href="https://www.npmjs.com/package/@contextcompany/langchain" target="_blank"><img src="https://img.shields.io/npm/dm/@contextcompany/langchain?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`Toolstem`](https://toolstem.com) | <span data-sort-value="63"><a href="https://www.npmjs.com/package/langchain-toolstem" target="_blank"><img src="https://img.shields.io/npm/dm/langchain-toolstem?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`SafePromptCallbackHandler`](https://docs.safeprompt.dev/langchain) | <span data-sort-value="30"><a href="https://www.npmjs.com/package/@safeprompt.dev/langchain" target="_blank"><img src="https://img.shields.io/npm/dm/@safeprompt.dev/langchain?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`AproxPay`](https://github.com/aproxpay/langchain-aproxpay) | <span data-sort-value="27"><a href="https://www.npmjs.com/package/langchain-aproxpay" target="_blank"><img src="https://img.shields.io/npm/dm/langchain-aproxpay?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`ClickSend`](/oss/javascript/integrations/tools/clicksend) | <span data-sort-value="25"><a href="https://www.npmjs.com/package/@clicksend/langchain-clicksend-mcp" target="_blank"><img src="https://img.shields.io/npm/dm/@clicksend/langchain-clicksend-mcp?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`iFlow Search`](https://platform.iflow.cn) | <span data-sort-value="19"><a href="https://www.npmjs.com/package/@iflow-ai/search-langchain" target="_blank"><img src="https://img.shields.io/npm/dm/@iflow-ai/search-langchain?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`Serpex`](https://serpex.dev/docs) | <span data-sort-value="18"><a href="https://www.npmjs.com/package/langchain-serpex-js" target="_blank"><img src="https://img.shields.io/npm/dm/langchain-serpex-js?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`CekiToolkit`](https://ceki.me) | <span data-sort-value="17"><a href="https://www.npmjs.com/package/@ceki/langchain-ceki" target="_blank"><img src="https://img.shields.io/npm/dm/@ceki/langchain-ceki?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`SnapRender`](https://snap-render.com) | <span data-sort-value="14"><a href="https://www.npmjs.com/package/langchain-snaprender" target="_blank"><img src="https://img.shields.io/npm/dm/langchain-snaprender?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`Respan`](https://www.respan.ai/docs/documentation/overview) | <span data-sort-value="13"><a href="https://www.npmjs.com/package/@respan/instrumentation-langchain" target="_blank"><img src="https://img.shields.io/npm/dm/@respan/instrumentation-langchain?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`NiaToolkit`](/oss/javascript/integrations/tools/nia) | <span data-sort-value="11"><a href="https://www.npmjs.com/package/@nozomioai/langchain-nia" target="_blank"><img src="https://img.shields.io/npm/dm/@nozomioai/langchain-nia?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
-| [`SIGNA`](https://github.com/codexvritra/signa/tree/main/sdk/langchain) | <span data-sort-value="7"><a href="https://www.npmjs.com/package/signa-langchain" target="_blank"><img src="https://img.shields.io/npm/dm/signa-langchain?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`Dall-e`](/oss/javascript/integrations/tools/dalle) | <span data-sort-value="14383544"><a href="https://www.npmjs.com/package/@langchain/openai" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/openai?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`OpenAI`](/oss/javascript/integrations/tools/openai) | <span data-sort-value="14383544"><a href="https://www.npmjs.com/package/@langchain/openai" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/openai?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`OpenAPI toolkit`](/oss/javascript/integrations/tools/openapi) | <span data-sort-value="12626155"><a href="https://www.npmjs.com/package/@langchain/langgraph" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/langgraph?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`Anthropic`](/oss/javascript/integrations/tools/anthropic) | <span data-sort-value="4942671"><a href="https://www.npmjs.com/package/@langchain/anthropic" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/anthropic?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`TavilyCrawl`](/oss/javascript/integrations/tools/tavily_crawl) | <span data-sort-value="325160"><a href="https://www.npmjs.com/package/@langchain/tavily" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/tavily?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`TavilyExtract`](/oss/javascript/integrations/tools/tavily_extract) | <span data-sort-value="325160"><a href="https://www.npmjs.com/package/@langchain/tavily" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/tavily?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`TavilyGetResearch`](/oss/javascript/integrations/tools/tavily_get_research) | <span data-sort-value="325160"><a href="https://www.npmjs.com/package/@langchain/tavily" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/tavily?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`TavilyMap`](/oss/javascript/integrations/tools/tavily_map) | <span data-sort-value="325160"><a href="https://www.npmjs.com/package/@langchain/tavily" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/tavily?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`TavilyResearch`](/oss/javascript/integrations/tools/tavily_research) | <span data-sort-value="325160"><a href="https://www.npmjs.com/package/@langchain/tavily" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/tavily?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`TavilySearch`](/oss/javascript/integrations/tools/tavily_search) | <span data-sort-value="325160"><a href="https://www.npmjs.com/package/@langchain/tavily" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/tavily?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`Google`](/oss/javascript/integrations/tools/google) | <span data-sort-value="298563"><a href="https://www.npmjs.com/package/@langchain/google" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/google?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`OracleSummary`](/oss/javascript/integrations/tools/oracleai) | <span data-sort-value="163782"><a href="https://www.npmjs.com/package/@oracle/langchain-oracledb" target="_blank"><img src="https://img.shields.io/npm/dm/@oracle/langchain-oracledb?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`ExaSearchResults`](/oss/javascript/integrations/tools/exa_search) | <span data-sort-value="62860"><a href="https://www.npmjs.com/package/@langchain/exa" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/exa?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`Composio`](/oss/javascript/integrations/tools/composio) | <span data-sort-value="42291"><a href="https://www.npmjs.com/package/@composio/langchain" target="_blank"><img src="https://img.shields.io/npm/dm/@composio/langchain?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`Mcp toolbox for databases`](/oss/javascript/integrations/tools/mcp_toolbox) | <span data-sort-value="10655"><a href="https://www.npmjs.com/package/@toolbox-sdk/core" target="_blank"><img src="https://img.shields.io/npm/dm/@toolbox-sdk/core?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`WatsonxToolkit`](/oss/javascript/integrations/tools/ibm) | <span data-sort-value="3664"><a href="https://www.npmjs.com/package/@langchain/ibm" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/ibm?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`Bilig WorkPaper`](https://proompteng.github.io/bilig/) | <span data-sort-value="1302"><a href="https://www.npmjs.com/package/@bilig/workpaper" target="_blank"><img src="https://img.shields.io/npm/dm/@bilig/workpaper?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`Jigsawstack`](/oss/javascript/integrations/tools/jigsawstack) | <span data-sort-value="1268"><a href="https://www.npmjs.com/package/@langchain/jigsawstack" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/jigsawstack?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`AtomicMailToolkit`](https://atomic-mail.github.io/atomic-mail-agentic/langchain) | <span data-sort-value="1033"><a href="https://www.npmjs.com/package/@atomicmail/langchain" target="_blank"><img src="https://img.shields.io/npm/dm/@atomicmail/langchain?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`Fidacy Action Firewall`](https://github.com/fidacy/fidacy-open) | <span data-sort-value="858"><a href="https://www.npmjs.com/package/@fidacy/langchain" target="_blank"><img src="https://img.shields.io/npm/dm/@fidacy/langchain?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`PerplexitySearchResults`](/oss/javascript/integrations/tools/perplexity_search) | <span data-sort-value="698"><a href="https://www.npmjs.com/package/@langchain/perplexity" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/perplexity?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`Pushary`](https://github.com/Pushary/pushary-langgraph) | <span data-sort-value="643"><a href="https://www.npmjs.com/package/@pushary/langgraph" target="_blank"><img src="https://img.shields.io/npm/dm/@pushary/langgraph?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`Decodo`](/oss/javascript/integrations/tools/decodo) | <span data-sort-value="383"><a href="https://www.npmjs.com/package/@decodo/langchain-ts" target="_blank"><img src="https://img.shields.io/npm/dm/@decodo/langchain-ts?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`Falkordb`](/oss/javascript/integrations/tools/falkordb) | <span data-sort-value="283"><a href="https://www.npmjs.com/package/@falkordb/langchain-ts" target="_blank"><img src="https://img.shields.io/npm/dm/@falkordb/langchain-ts?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`TalorDataSerpTool`](https://docs.talordata.com/serp-api/integration/sdk-integration/how-to-set-up-talordata-with-langchain) | <span data-sort-value="278"><a href="https://www.npmjs.com/package/langchain-talordata" target="_blank"><img src="https://img.shields.io/npm/dm/langchain-talordata?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`aiworker`](https://github.com/ai-worker227/aiworker-examples/tree/main/langchain) | <span data-sort-value="257"><a href="https://www.npmjs.com/package/aiworker-langchain-tools" target="_blank"><img src="https://img.shields.io/npm/dm/aiworker-langchain-tools?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`You.com search tools`](https://you.com/docs/integrations/langchain) | <span data-sort-value="198"><a href="https://www.npmjs.com/package/@youdotcom-oss/langchain" target="_blank"><img src="https://img.shields.io/npm/dm/@youdotcom-oss/langchain?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`Azure container apps dynamic sessions`](/oss/javascript/integrations/tools/azure_dynamic_sessions) | <span data-sort-value="197"><a href="https://www.npmjs.com/package/@langchain/azure-dynamic-sessions" target="_blank"><img src="https://img.shields.io/npm/dm/@langchain/azure-dynamic-sessions?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`MagicHourTools`](https://docs.magichour.ai) | <span data-sort-value="154"><a href="https://www.npmjs.com/package/langchain-magic-hour" target="_blank"><img src="https://img.shields.io/npm/dm/langchain-magic-hour?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`The Context Company`](https://docs.thecontextcompany.com/frameworks/langchain-langgraph) | <span data-sort-value="75"><a href="https://www.npmjs.com/package/@contextcompany/langchain" target="_blank"><img src="https://img.shields.io/npm/dm/@contextcompany/langchain?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`Toolstem`](https://toolstem.com) | <span data-sort-value="52"><a href="https://www.npmjs.com/package/langchain-toolstem" target="_blank"><img src="https://img.shields.io/npm/dm/langchain-toolstem?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`ClickSend`](/oss/javascript/integrations/tools/clicksend) | <span data-sort-value="39"><a href="https://www.npmjs.com/package/@clicksend/langchain-clicksend-mcp" target="_blank"><img src="https://img.shields.io/npm/dm/@clicksend/langchain-clicksend-mcp?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`SafePromptCallbackHandler`](https://docs.safeprompt.dev/langchain) | <span data-sort-value="39"><a href="https://www.npmjs.com/package/@safeprompt.dev/langchain" target="_blank"><img src="https://img.shields.io/npm/dm/@safeprompt.dev/langchain?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`Corsair`](https://docs.corsair.dev/mcp-adapters/langchain) | <span data-sort-value="38"><a href="https://www.npmjs.com/package/@corsair-dev/langchain" target="_blank"><img src="https://img.shields.io/npm/dm/@corsair-dev/langchain?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`iFlow Search`](https://platform.iflow.cn) | <span data-sort-value="23"><a href="https://www.npmjs.com/package/@iflow-ai/search-langchain" target="_blank"><img src="https://img.shields.io/npm/dm/@iflow-ai/search-langchain?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`AproxPay`](https://github.com/aproxpay/langchain-aproxpay) | <span data-sort-value="22"><a href="https://www.npmjs.com/package/langchain-aproxpay" target="_blank"><img src="https://img.shields.io/npm/dm/langchain-aproxpay?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`CekiToolkit`](https://ceki.me) | <span data-sort-value="20"><a href="https://www.npmjs.com/package/@ceki/langchain-ceki" target="_blank"><img src="https://img.shields.io/npm/dm/@ceki/langchain-ceki?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`Serpex`](https://serpex.dev/docs) | <span data-sort-value="20"><a href="https://www.npmjs.com/package/langchain-serpex-js" target="_blank"><img src="https://img.shields.io/npm/dm/langchain-serpex-js?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`Respan`](https://www.respan.ai/docs/documentation/overview) | <span data-sort-value="18"><a href="https://www.npmjs.com/package/@respan/instrumentation-langchain" target="_blank"><img src="https://img.shields.io/npm/dm/@respan/instrumentation-langchain?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`SnapRender`](https://snap-render.com) | <span data-sort-value="18"><a href="https://www.npmjs.com/package/langchain-snaprender" target="_blank"><img src="https://img.shields.io/npm/dm/langchain-snaprender?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`SIGNA`](https://github.com/codexvritra/signa/tree/main/sdk/langchain) | <span data-sort-value="16"><a href="https://www.npmjs.com/package/signa-langchain" target="_blank"><img src="https://img.shields.io/npm/dm/signa-langchain?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
+| [`NiaToolkit`](/oss/javascript/integrations/tools/nia) | <span data-sort-value="10"><a href="https://www.npmjs.com/package/@nozomioai/langchain-nia" target="_blank"><img src="https://img.shields.io/npm/dm/@nozomioai/langchain-nia?style=flat-square&label=%20&" alt="Downloads per month" noZoom class="rounded not-prose" /></a></span> |
 | [`Agent with AWS lambda`](/oss/javascript/integrations/tools/lambda_agent) | <span data-sort-value="-1">N/A</span> |
 | [`Browserless`](https://browserless.io) | <span data-sort-value="-1">N/A</span> |
 | [`JSON agent toolkit`](/oss/javascript/integrations/tools/json) | <span data-sort-value="-1">N/A</span> |
@@ -70521,6 +70717,10 @@ You can invoke an agent with a message. Behind the scenes that passes an update 
     ```
 </CodeGroup>
 
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/5e5926b4-3156-477c-83e5-969404aeb92e/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
+
 
 
 <Note>
@@ -70742,6 +70942,10 @@ If you also need to pass per-run configuration (such as a user ID, API keys, or 
     ```
 </CodeGroup>
 
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/8b453131-3d7f-4218-a407-f724b96fb4e7/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
+
 `thread_id` scopes the *conversation* (message history, checkpoints), while `context` carries *per-run* data your tools and middleware read at invocation time. Both are commonly passed together. See [tool context](/oss/javascript/langchain/tools#context) and [Runtime](/oss/javascript/langchain/runtime) for more.
 
 
@@ -70778,6 +70982,10 @@ for await (const snapshot of stream.values) {
   }
 }
 ```
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/311f121f-4400-4709-a202-2f11e972669d/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
 
 
 
@@ -73387,7 +73595,7 @@ npm install deepagents langsmith
 This tutorial uses [`LangSmithSandbox`](https://reference.langchain.com/javascript/deepagents/backends/LangSmithSandbox), which provisions sandboxes through `SandboxClient`. That client authenticates with LangSmith using `LANGSMITH_API_KEY` from your environment, so an API key is required to run the tutorial. Setting up LangSmith also allows you to see traces of what happens when your agent runs.
 
 1. [Sign up for a free account](https://smith.langchain.com?utm_source=docs&utm_medium=cta&utm_campaign=langsmith-signup&utm_content=oss-langchain-deep-agent-from-scratch). You can use Google, GitHub, or email.
-2. [Create an API key](/langsmith/create-account-api-key) in **Settings → API Keys**.
+2. [Create an API key](/langsmith/create-account-api-key) in **Settings > API Keys**.
 3. Export the LangSmith API key:
 
 ```bash
@@ -73745,7 +73953,7 @@ Update your agent from step 2 by adding [`SummarizationMiddleware`](https://refe
     ```ts Google
     import { createSummarizationMiddleware } from "deepagents";
     
-    model = "google-genai:gemini-3.6-flash";
+    let model = "google-genai:gemini-3.6-flash";
     
     agent = createAgent({
       model,
@@ -73763,7 +73971,7 @@ Update your agent from step 2 by adding [`SummarizationMiddleware`](https://refe
     ```ts OpenAI
     import { createSummarizationMiddleware } from "deepagents";
     
-    model = "openai:gpt-5.5";
+    let model = "openai:gpt-5.5";
     
     agent = createAgent({
       model,
@@ -73781,7 +73989,7 @@ Update your agent from step 2 by adding [`SummarizationMiddleware`](https://refe
     ```ts Anthropic
     import { createSummarizationMiddleware } from "deepagents";
     
-    model = "anthropic:claude-sonnet-4-6";
+    let model = "anthropic:claude-sonnet-4-6";
     
     agent = createAgent({
       model,
@@ -73799,7 +74007,7 @@ Update your agent from step 2 by adding [`SummarizationMiddleware`](https://refe
     ```ts OpenRouter
     import { createSummarizationMiddleware } from "deepagents";
     
-    model = "openrouter:openrouter:z-ai/glm-5.2";
+    let model = "openrouter:openrouter:z-ai/glm-5.2";
     
     agent = createAgent({
       model,
@@ -73817,7 +74025,7 @@ Update your agent from step 2 by adding [`SummarizationMiddleware`](https://refe
     ```ts Fireworks
     import { createSummarizationMiddleware } from "deepagents";
     
-    model = "fireworks:accounts/fireworks/models/glm-5p2";
+    let model = "fireworks:accounts/fireworks/models/glm-5p2";
     
     agent = createAgent({
       model,
@@ -73835,7 +74043,7 @@ Update your agent from step 2 by adding [`SummarizationMiddleware`](https://refe
     ```ts Baseten
     import { createSummarizationMiddleware } from "deepagents";
     
-    model = "baseten:zai-org/GLM-5.2";
+    let model = "baseten:zai-org/GLM-5.2";
     
     agent = createAgent({
       model,
@@ -73853,7 +74061,7 @@ Update your agent from step 2 by adding [`SummarizationMiddleware`](https://refe
     ```ts Ollama
     import { createSummarizationMiddleware } from "deepagents";
     
-    model = "ollama:north-mini-code-1.0";
+    let model = "ollama:north-mini-code-1.0";
     
     agent = createAgent({
       model,
@@ -83851,6 +84059,10 @@ For more information about the memory store, see the [Persistence](/oss/javascri
     ```
 </CodeGroup>
 
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/e103a798-8829-42a4-9a1a-9e0f8fc04c62/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
+
 
     </Tab>
     <Tab title="PostgreSQL">
@@ -84172,6 +84384,10 @@ For more information about the memory store, see the [Persistence](/oss/javascri
     );
     ```
 </CodeGroup>
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/e0440c39-4561-4c13-90b3-5b2ff18037ef/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
 
 
     </Tab>
@@ -84585,6 +84801,10 @@ For more information about the memory store, see the [Persistence](/oss/javascri
     ```
 </CodeGroup>
 
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/b97eea49-0f7a-439c-b94d-2e5224c2fab4/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
+
 
     </Tab>
     <Tab title="PostgreSQL">
@@ -84899,6 +85119,10 @@ For more information about the memory store, see the [Persistence](/oss/javascri
     console.log(result?.value);
     ```
 </CodeGroup>
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/564f79cc-a377-4016-a8d3-9f5752eab516/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
 
 
     </Tab>
@@ -85566,7 +85790,7 @@ MCP tools can return [multimodal content](https://modelcontextprotocol.io/specif
       const { MultiServerMCPClient } = await import("@langchain/mcp-adapters");
       const client = new MultiServerMCPClient({});
       const tools = await client.getTools();
-      const agent = createAgent({ model: "anthropic:claude-sonnet-5", tools });
+      const agent = createAgent({ model: "anthropic:claude-sonnet-4-6", tools });
     
       const result = await agent.invoke({
         messages: [
@@ -89394,6 +89618,10 @@ Use the `systemMessage` field in `ModelRequest` to read and modify the system pr
     ```
 </CodeGroup>
 
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/4eaefcd5-90ad-4349-bb51-2cfc660e8af3/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
+
 Use [`SystemMessage.concat`](https://reference.langchain.com/javascript/langchain-core/utils/stream/concat) to preserve cache control metadata or structured content blocks created by other middleware.
 
 
@@ -89423,6 +89651,10 @@ const dynamicModelMiddleware = createMiddleware({
   },
 });
 ```
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/dc39d44b-bef7-49cf-bef8-45e5f4881bf8/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
 
 
 
@@ -98339,7 +98571,7 @@ This quickstart shows you how to create a fully functional AI agent in just a fe
 <Prompt
     description="Build the LangChain quickstart agent"
     icon="sparkles"
-    actions={["copy", "cursor"]}
+    actions={["copy"]}
 >
 Build a basic LangChain agent in this working directory by following the LangChain quickstart.
 
@@ -98381,7 +98613,7 @@ Ask the user if they want tracing. If yes, ask them to set `LANGSMITH_TRACING=tr
       <Prompt
     description="Connect LangChain docs MCP servers"
     icon="plug"
-    actions={["copy", "cursor"]}
+    actions={["copy"]}
 >
 Connect both LangChain documentation MCP servers to my coding agent so it can look up current LangChain, LangGraph, and LangSmith docs and API reference.
 
@@ -98404,7 +98636,7 @@ Do not invent alternate MCP URLs. After configuring, confirm both servers are li
       <Prompt
     description="Install LangChain Skills"
     icon="puzzle"
-    actions={["copy", "cursor"]}
+    actions={["copy"]}
 >
 Install LangChain Skills for my coding agent so it can perform better on LangChain, LangGraph, and Deep Agents tasks.
 
@@ -99953,6 +100185,10 @@ To add short-term memory (thread-level persistence) to an agent, you need to spe
     ```
 </CodeGroup>
 
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/eaa48cfd-c3f0-4951-a496-f448a8dd7a04/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
+
 
 
 ### In production
@@ -100467,11 +100703,11 @@ for (const message of result.messages) {
     }
 }%%
 graph TD
-    S(["\_\_start\_\_"])
+    S(["`\_\_start\_\_`"])
     PRE(before_model)
     MODEL(model)
     TOOLS(tools)
-    END(["\_\_end\_\_"])
+    END(["`\_\_end\_\_`"])
     S --> PRE
     PRE --> MODEL
     MODEL -.-> TOOLS
@@ -102691,6 +102927,10 @@ Pass a `thread_id` via `configurable` so the conversation is checkpointed and fo
     ```
 </CodeGroup>
 
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/20bac62c-c7af-4ee2-9dd3-129e24ce6834/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
+
 <Note>
 Persisting conversation history with `thread_id` requires the agent to be configured with a [checkpointer](/oss/javascript/langchain/long-term-memory). On [LangSmith deployments](/langsmith/deployment) a checkpointer is provisioned automatically. Locally, pass one explicitly, for example `createAgent({ ..., checkpointer: new MemorySaver() })`. The remaining snippets on this page omit `thread_id` for brevity, but you should pass it in production.
 </Note>
@@ -102893,6 +103133,10 @@ for await (const message of stream.messages) {
   }
 }
 ```
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/a8cf65f3-e85e-448c-844e-67019558ddbc/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
 
 ```shell title="Output"
 [thinking] The user is asking about the weather in San Francisco. I have a tool
@@ -105132,6 +105376,10 @@ Tools can access an agent's runtime context through the `config` parameter. Pass
     ```
 </CodeGroup>
 
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/59163065-33b5-4b9e-a8d0-dc882e31f97c/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
+
 
 
 ### Long-term memory (Store)
@@ -105714,6 +105962,10 @@ Set return direct on a tool to short-circuit the agent loop: the agent returns t
     // "Order 12345 is shipped and will arrive in 2 days."
     ```
 </CodeGroup>
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/8f9bb682-fa0b-4264-8495-246703f0624b/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
 
 
 
@@ -113913,15 +114165,16 @@ const graph = new StateGraph({
     return { foo: state.userInput + " name" };
   })
   .addNode("node2", (state) => {
-    // Read from OverallState, write to PrivateState
+    // Read from OverallState, write to the private bar channel
     return { bar: state.foo + " is" };
   })
   .addNode(
     "node3",
     (state) => {
-      // Read from PrivateState, write to OutputState
+      // Read from the private bar channel, write to OutputState
       return { graphOutput: state.bar + " Lance" };
     },
+    // This input schema declares what node3 reads and registers bar as a graph channel.
     { input: PrivateState },
   )
   .addEdge(START, "node1")
@@ -113933,6 +114186,10 @@ const graph = new StateGraph({
 await graph.invoke({ userInput: "My" });
 // { graphOutput: 'My name is Lance' }
 ```
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/2ec2bda1-e202-4d3f-940b-81bdd0e23be1/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
 
 
 
@@ -114010,6 +114267,10 @@ for await (const snapshot of stream.values) {
 // { foo: 'My name', userInput: 'My', graphOutput: 'My name is Lance', bar: 'My name is' }
 ```
 
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/03351e93-f024-493a-afae-ed5827ec7751/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
+
 To restrict the streamed values to a specific set of channels (e.g. only the output schema), pass `outputKeys`:
 
 ```typescript
@@ -114068,6 +114329,10 @@ const State = new StateSchema({
 });
 ```
 
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/93ae7eff-5da7-48ae-893a-2e85e87ecd2c/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
+
 Suppose the state is `{ tags: ["draft"] }` and a node returns `{ tags: ["review"] }`. LangGraph calls:
 
 ```ts
@@ -114098,6 +114363,10 @@ const State = new StateSchema({
 });
 ```
 
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/b3536d55-6b2a-4b92-b956-be768be61b3d/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
+
 
 
 In this example, no reducer functions are specified for any key. Let's assume the input to the graph is:
@@ -114125,6 +114394,10 @@ const State = new StateSchema({
   ),
 });
 ```
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/65abf4d1-0932-4229-9d3f-c21e52d6008c/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
 
 In this example, we've used `ReducedValue` to specify a reducer function for the second key (`bar`). Note that the first key remains unchanged. Let's assume the input to the graph is `{ foo: 1, bar: ["hi"] }`. Let's then assume the first `Node` returns `{ foo: 2 }`. This is treated as an update to the state. Notice that the `Node` does not need to return the whole `State` schema - just an update. After applying this update, the `State` would then be `{ foo: 2, bar: ["hi"] }`. If the second node returns `{ bar: ["bye"] }` then the `State` would then be `{ foo: 2, bar: ["hi", "bye"] }`. Notice here that the `bar` key is updated by concatenating the two arrays together.
 
@@ -114155,6 +114428,10 @@ const State = new StateSchema({
 // state.errors is still ["bad sql"]; the empty array is merged in, not cleared
 ```
 
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/c65687b5-c6a9-4dca-9f6b-17ff20669c52/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
+
 To let a node reset (clear) the field, define a custom reducer that replaces the accumulated value instead of merging it:
 
 ```ts
@@ -114170,6 +114447,10 @@ const State = new StateSchema({
 
 // node can now clear the field with { errors: [] }
 ```
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/f08045e6-6826-46ab-8437-73b120f5f615/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
 
 
 
@@ -114495,6 +114776,10 @@ const config = { configurable: { thread_id: threadId } };
 
 await graph.invoke({ url: "https://www.example.com" }, config);
 ```
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/9a25fd41-1999-46d9-800d-3da14ff1cf7a/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
     </Tab>
     <Tab title="With task">
     ```ts
@@ -114540,6 +114825,10 @@ const config = { configurable: { thread_id: threadId } };
 
 await graph.invoke({ urls: ["https://www.example.com"] }, config);
 ```
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/10423c16-9de8-476c-808f-08a150d19d34/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
     </Tab>
 </Tabs>
 
@@ -115403,6 +115692,10 @@ while (true) {
 }
 ```
 
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/2f053efa-abf1-42a0-9c10-df949570681a/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
+
 - **`stream.messages`**: Chat-model output as content blocks; iterate `message.text` for token deltas. For nested subgraphs, read message chunks from `stream.subgraphs[*].messages`.
 - **`stream.values`**: Full state snapshots after each step
 - **`stream.interrupted` / `stream.interrupts`**: After each run, check whether the graph paused; read payloads from `stream.interrupts`
@@ -115849,6 +116142,10 @@ const getAgeNode: typeof State.Node = (state) => {
 //   state.age !== null ? END : "collectAge"
 // );
 ```
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/04c9112c-edbf-497d-92b8-7263fb485ff5/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
 
 Each resume invokes `getAgeNode` exactly once, runs the `interrupt()` call once, and exits. When the answer is invalid, the conditional edge loops back and the next interrupt re-prompts with the updated question.
 
@@ -117348,7 +117645,7 @@ This quickstart demonstrates how to build a calculator agent using the LangGraph
 <Prompt
     description="Build the LangGraph calculator quickstart"
     icon="sparkles"
-    actions={["copy", "cursor"]}
+    actions={["copy"]}
 >
 Build a LangGraph calculator agent in this working directory by following the LangGraph quickstart.
 
@@ -117388,7 +117685,7 @@ Implement the selected quickstart path end to end: tools for add, multiply, and 
       <Prompt
     description="Connect LangChain docs MCP servers"
     icon="plug"
-    actions={["copy", "cursor"]}
+    actions={["copy"]}
 >
 Connect both LangChain documentation MCP servers to my coding agent so it can look up current LangChain, LangGraph, and LangSmith docs and API reference.
 
@@ -117411,7 +117708,7 @@ Do not invent alternate MCP URLs. After configuring, confirm both servers are li
       <Prompt
     description="Install LangChain Skills"
     icon="puzzle"
-    actions={["copy", "cursor"]}
+    actions={["copy"]}
 >
 Install LangChain Skills for my coding agent so it can perform better on LangChain, LangGraph, and Deep Agents tasks.
 
@@ -119705,6 +120002,10 @@ const stream = await graph.streamEvents(
   { version: "v3" },
 );
 ```
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/c687f067-9c14-4e17-9ebe-0333c2344f1c/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
 
 
 
@@ -122074,6 +122375,10 @@ for await (const chunk of stream.values) {
 }
 // 10
 ```
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/8737a21a-1a44-47ce-b3bd-880a15fc7375/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>
 
 1. Emit custom data before computation begins.
 2. Emit another custom message after computing the result.
