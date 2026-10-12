@@ -311,6 +311,8 @@ When nodes execute in parallel, only one node can use `Overwrite` on the same st
 </Warning>
 
 
+
+
 ### Define input and output schemas
 
 By default, `StateGraph` operates with a single schema, and all nodes are expected to communicate using that schema. However, it's also possible to define distinct input and output schemas for a graph.
@@ -1419,17 +1421,17 @@ Importantly, updates from a parallel superstep may not be ordered consistently. 
   If you have error-prone (perhaps want to handle flakey API calls), LangGraph provides two ways to address this:
 
   1. You can write regular python code within your node to catch and handle exceptions.
-  2. You can set a **[`RetryPolicy`](https://reference.langchain.com/python/langgraph/types/#langgraph.types.RetryPolicy)** to direct the graph to retry nodes that raise certain types of exceptions. Only failing branches are retried, so you needn't worry about performing redundant work.
+  2. You can set a **[`RetryPolicy`](https://reference.langchain.com/python/langgraph/types)** to direct the graph to retry nodes that raise certain types of exceptions. Only failing branches are retried, so you needn't worry about performing redundant work.
 
   Together, these let you perform parallel execution and fully control exception handling.
 </Accordion>
 
 <Tip>
 **Set max concurrency**
-You can control the maximum number of concurrent tasks by setting `max_concurrency` in the [configuration](https://reference.langchain.com/python/langchain-core/runnables/config/RunnableConfig) when invoking the graph.
+You can control the maximum number of concurrent tasks by setting `max_concurrency` in the [configuration](https://reference.langchain.com/python/langchain-core/runnables/config/RunnableConfig) when invoking the graph. `max_concurrency` is a standalone config key, so set it at the top level of the config rather than inside `configurable`.
 
 ```python
-graph.invoke({"value_1": "c"}, {"configurable": {"max_concurrency": 10}})
+graph.invoke({"value_1": "c"}, {"max_concurrency": 10})
 ```
 </Tip>
 
@@ -2394,7 +2396,7 @@ except ImportError:
 
 <div className="source-links">
 <Callout icon="terminal-2">
-    [Connect these docs](/use-these-docs) to Claude, VSCode, and more via MCP for real-time answers.
+    [Connect these docs](/use-these-docs) to your agent of choice via MCP for real-time answers.
 </Callout>
 <Callout icon="edit">
     [Edit this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/use-graph-api.mdx) or [file an issue](https://github.com/langchain-ai/docs/issues/new/choose).

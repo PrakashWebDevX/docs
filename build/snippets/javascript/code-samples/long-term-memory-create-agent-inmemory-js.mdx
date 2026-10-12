@@ -7,7 +7,7 @@
     const store = new InMemoryStore();
     
     const agent = createAgent({
-      model: "google-genai:gemini-3.6-flash",
+      model: "google:gemini-3.6-flash",
       tools: [],
       store,
     });
@@ -35,7 +35,7 @@
     const store = new InMemoryStore();
     
     const agent = createAgent({
-      model: "anthropic:claude-sonnet-4-6",
+      model: "anthropic:claude-sonnet-5",
       tools: [],
       store,
     });
@@ -49,7 +49,7 @@
     const store = new InMemoryStore();
     
     const agent = createAgent({
-      model: "openrouter:openrouter:z-ai/glm-5.2",
+      model: "openrouter:z-ai/glm-5.2",
       tools: [],
       store,
     });
@@ -97,3 +97,7 @@
     });
     ```
 </CodeGroup>
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/a6be2083-3efd-4571-86bc-af3ac3d29ca3/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>

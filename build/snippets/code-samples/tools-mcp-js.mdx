@@ -14,7 +14,7 @@
     const tools = await client.getTools();
     
     const agent = await createDeepAgent({
-      model: "google-genai:gemini-3.6-flash",
+      model: "google:gemini-3.6-flash",
       tools,
     });
     
@@ -62,7 +62,7 @@
     const tools = await client.getTools();
     
     const agent = await createDeepAgent({
-      model: "anthropic:claude-sonnet-4-6",
+      model: "anthropic:claude-sonnet-5",
       tools,
     });
     
@@ -86,7 +86,7 @@
     const tools = await client.getTools();
     
     const agent = await createDeepAgent({
-      model: "openrouter:openrouter:z-ai/glm-5.2",
+      model: "openrouter:z-ai/glm-5.2",
       tools,
     });
     
@@ -167,3 +167,7 @@
     });
     ```
 </CodeGroup>
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/8d5c96b3-9582-4dc8-b89b-8f667e64836d/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>

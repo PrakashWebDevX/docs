@@ -15,7 +15,7 @@
     });
     
     const agent = createAgent({
-      model: "google-genai:gemini-3.6-flash",
+      model: "google:gemini-3.6-flash",
       tools: [],
       middleware: [stateMiddleware],
     });
@@ -59,7 +59,7 @@
     });
     
     const agent = createAgent({
-      model: "anthropic:claude-sonnet-4-6",
+      model: "anthropic:claude-sonnet-5",
       tools: [],
       middleware: [stateMiddleware],
     });
@@ -81,7 +81,7 @@
     });
     
     const agent = createAgent({
-      model: "openrouter:openrouter:z-ai/glm-5.2",
+      model: "openrouter:z-ai/glm-5.2",
       tools: [],
       middleware: [stateMiddleware],
     });
@@ -153,3 +153,7 @@
     });
     ```
 </CodeGroup>
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/7e33888d-0583-4e7b-993f-5a033d502eb9/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>

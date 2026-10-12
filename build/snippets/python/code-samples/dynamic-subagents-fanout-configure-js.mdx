@@ -4,7 +4,7 @@
     import { createCodeInterpreterMiddleware } from "@langchain/quickjs";
     
     const agent = createDeepAgent({
-      model: "google-genai:gemini-3.6-flash",
+      model: "google:gemini-3.6-flash",
       subagents: [{
         name: "reviewer",
         description: "Reviews code for security issues, citing lines and severity",
@@ -34,7 +34,7 @@
     import { createCodeInterpreterMiddleware } from "@langchain/quickjs";
     
     const agent = createDeepAgent({
-      model: "anthropic:claude-sonnet-4-6",
+      model: "anthropic:claude-sonnet-5",
       subagents: [{
         name: "reviewer",
         description: "Reviews code for security issues, citing lines and severity",
@@ -49,7 +49,7 @@
     import { createCodeInterpreterMiddleware } from "@langchain/quickjs";
     
     const agent = createDeepAgent({
-      model: "openrouter:openrouter:z-ai/glm-5.2",
+      model: "openrouter:z-ai/glm-5.2",
       subagents: [{
         name: "reviewer",
         description: "Reviews code for security issues, citing lines and severity",
@@ -104,3 +104,7 @@
     });
     ```
 </CodeGroup>
+
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/521542f0-6b09-467c-ba36-838f76424c44/r" arrow horizontal>
+  Open a public LangSmith run for this example.
+</Card>

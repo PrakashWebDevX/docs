@@ -1,5 +1,6 @@
 <CodeGroup>
     ```ts Google
+import { uuid7 } from "langsmith";
     import * as z from "zod";
     import { AIMessage } from "@langchain/core/messages";
     import { createAgent } from "langchain";
@@ -10,7 +11,7 @@
     });
     
     const agent = createAgent({
-      model: "google-genai:gemini-3.6-flash",
+      model: "google:gemini-3.6-flash",
       tools: [],
       contextSchema,
       checkpointer: new MemorySaver(),
@@ -23,13 +24,14 @@
         ],
       },
       {
-        configurable: { thread_id: crypto.randomUUID() },
+        configurable: { thread_id: uuid7() },
         context: { user_id: "user-123" },
       },
     );
     ```
 
     ```ts OpenAI
+import { uuid7 } from "langsmith";
     import * as z from "zod";
     import { AIMessage } from "@langchain/core/messages";
     import { createAgent } from "langchain";
@@ -53,13 +55,14 @@
         ],
       },
       {
-        configurable: { thread_id: crypto.randomUUID() },
+        configurable: { thread_id: uuid7() },
         context: { user_id: "user-123" },
       },
     );
     ```
 
     ```ts Anthropic
+import { uuid7 } from "langsmith";
     import * as z from "zod";
     import { AIMessage } from "@langchain/core/messages";
     import { createAgent } from "langchain";
@@ -70,7 +73,7 @@
     });
     
     const agent = createAgent({
-      model: "anthropic:claude-sonnet-4-6",
+      model: "anthropic:claude-sonnet-5",
       tools: [],
       contextSchema,
       checkpointer: new MemorySaver(),
@@ -83,13 +86,14 @@
         ],
       },
       {
-        configurable: { thread_id: crypto.randomUUID() },
+        configurable: { thread_id: uuid7() },
         context: { user_id: "user-123" },
       },
     );
     ```
 
     ```ts OpenRouter
+import { uuid7 } from "langsmith";
     import * as z from "zod";
     import { AIMessage } from "@langchain/core/messages";
     import { createAgent } from "langchain";
@@ -100,7 +104,7 @@
     });
     
     const agent = createAgent({
-      model: "openrouter:openrouter:z-ai/glm-5.2",
+      model: "openrouter:z-ai/glm-5.2",
       tools: [],
       contextSchema,
       checkpointer: new MemorySaver(),
@@ -113,13 +117,14 @@
         ],
       },
       {
-        configurable: { thread_id: crypto.randomUUID() },
+        configurable: { thread_id: uuid7() },
         context: { user_id: "user-123" },
       },
     );
     ```
 
     ```ts Fireworks
+import { uuid7 } from "langsmith";
     import * as z from "zod";
     import { AIMessage } from "@langchain/core/messages";
     import { createAgent } from "langchain";
@@ -143,13 +148,14 @@
         ],
       },
       {
-        configurable: { thread_id: crypto.randomUUID() },
+        configurable: { thread_id: uuid7() },
         context: { user_id: "user-123" },
       },
     );
     ```
 
     ```ts Baseten
+import { uuid7 } from "langsmith";
     import * as z from "zod";
     import { AIMessage } from "@langchain/core/messages";
     import { createAgent } from "langchain";
@@ -173,13 +179,14 @@
         ],
       },
       {
-        configurable: { thread_id: crypto.randomUUID() },
+        configurable: { thread_id: uuid7() },
         context: { user_id: "user-123" },
       },
     );
     ```
 
     ```ts Ollama
+import { uuid7 } from "langsmith";
     import * as z from "zod";
     import { AIMessage } from "@langchain/core/messages";
     import { createAgent } from "langchain";
@@ -203,13 +210,13 @@
         ],
       },
       {
-        configurable: { thread_id: crypto.randomUUID() },
+        configurable: { thread_id: uuid7() },
         context: { user_id: "user-123" },
       },
     );
     ```
 </CodeGroup>
 
-<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/8b453131-3d7f-4218-a407-f724b96fb4e7/r" arrow horizontal>
+<Card title="View example trace" icon="chart-line" href="https://smith.langchain.com/public/afee5acc-3718-422c-9f72-85e9b5a07112/r" arrow horizontal>
   Open a public LangSmith run for this example.
 </Card>

@@ -376,16 +376,18 @@ This feature is not currently supported directly for LLM objects.
 <CodeGroup>
 
 ```python Python
-import uuid
+from langchain_core.utils.uuid import uuid7
 
-my_uuid = uuid.uuid4()
+my_uuid = uuid7()
 
 # You can configure the run ID at invocation time:
 chain.invoke({"input": "What is the meaning of life?"}, {"run_id": my_uuid})
 ```
 
 ```typescript TypeScript
-const myUuid = crypto.randomUUID();
+import { uuid7 } from "langsmith";
+
+const myUuid = uuid7();
 
 // You can configure the run ID at invocation time, like below
 await chain.invoke({ input: "What is the meaning of life?" }, { runId: myUuid });
@@ -404,11 +406,10 @@ In JS/TS, you can use a `RunCollectorCallbackHandler` instance to access the run
 <CodeGroup>
 
 ```python Python
-import uuid
-
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
+from langchain_core.utils.uuid import uuid7
 
 prompt = ChatPromptTemplate.from_messages([
     ("system", "You are a helpful assistant. Please respond to the user's request only based on the given context."),
@@ -421,7 +422,7 @@ chain = prompt | model | output_parser
 
 question = "Can you summarize this morning's meetings?"
 context = "During this morning's meeting, we solved all world conflict."
-my_uuid = uuid.uuid4()
+my_uuid = uuid7()
 result = chain.invoke({"question": question, "context": context}, {"run_id": my_uuid})
 print(my_uuid)
 ```
@@ -728,7 +729,7 @@ If you prefer a video tutorial, check out the [Alternative Ways to Trace video](
 
 <div className="source-links">
 <Callout icon="terminal-2">
-    [Connect these docs](/use-these-docs) to Claude, VSCode, and more via MCP for real-time answers.
+    [Connect these docs](/use-these-docs) to your agent of choice via MCP for real-time answers.
 </Callout>
 <Callout icon="edit">
     [Edit this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/langsmith/trace-with-langchain.mdx) or [file an issue](https://github.com/langchain-ai/docs/issues/new/choose).

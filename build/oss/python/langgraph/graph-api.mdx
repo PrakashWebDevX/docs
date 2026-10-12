@@ -1,6 +1,8 @@
 ---
 title: Graph API overview
 sidebarTitle: Graph API
+description: "LangGraph models agent workflows as graphs: define state, nodes, and edges with StateGraph to build looping, stateful workflows."
+keywords: ["StateGraph", "state", "nodes", "edges", "reducer", "graph API"]
 ---
 
 import GraphApiUsingTasksOriginalJs from '/snippets/python/code-samples/graph-api-using-tasks-original-js.mdx';
@@ -20,6 +22,7 @@ import LanggraphGraphApiReducersCustomStateJs from '/snippets/python/code-sample
 import LanggraphGraphApiReducersCustomStatePy from '/snippets/python/code-samples/langgraph-graph-api-reducers-custom-state-py.mdx';
 import LanggraphGraphApiReducersMergeDoesNotClearJs from '/snippets/python/code-samples/langgraph-graph-api-reducers-merge-does-not-clear-js.mdx';
 import LanggraphGraphApiReducersMergeDoesNotClearPy from '/snippets/python/code-samples/langgraph-graph-api-reducers-merge-does-not-clear-py.mdx';
+import LanggraphGraphApiReducersOverwriteClearJs from '/snippets/python/code-samples/langgraph-graph-api-reducers-overwrite-clear-js.mdx';
 import LanggraphGraphApiReducersOverwriteClearPy from '/snippets/python/code-samples/langgraph-graph-api-reducers-overwrite-clear-py.mdx';
 import LanggraphGraphApiReducersReplaceJs from '/snippets/python/code-samples/langgraph-graph-api-reducers-replace-js.mdx';
 import LanggraphGraphApiReducersDefaultStateJs from '/snippets/python/code-samples/langgraph-graph-api-reducers-default-state-js.mdx';
@@ -1146,7 +1149,7 @@ To trace, debug and evaluate your agents, use [LangSmith](/langsmith/observabili
 
 <div className="source-links">
 <Callout icon="terminal-2">
-    [Connect these docs](/use-these-docs) to Claude, VSCode, and more via MCP for real-time answers.
+    [Connect these docs](/use-these-docs) to your agent of choice via MCP for real-time answers.
 </Callout>
 <Callout icon="edit">
     [Edit this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/graph-api.mdx) or [file an issue](https://github.com/langchain-ai/docs/issues/new/choose).
